@@ -7,6 +7,24 @@
 \textbf{Method} & \textbf{\# train} & \textbf{\# test} & \textbf{Train MAE} & \textbf{Test MAE} & \textbf{Coeffs} & \textbf{Functional Form} \\ 
 \hline
 \endhead
+HF & 228 & 26 & 0.15 & 0.13 & \begin{tabular}{l}\(c_{0}=1.000e+00\) \\ \(c_{1}=1.323e-08\) \\ \(c_{2}=0.000e+00\)\end{tabular} & $\begin{array}{l}( c_{0} \\ + c_{1}  \cdot  (N_{aux}  \cdot  N_{ao} ^ 2) \\ + c_{2}  \cdot  (N_{occ}  \cdot  N_{ao} ^ 2  \cdot  N_{aux}) )\end{array}$ \\ 
+\hline
+PBE-D3 & 273 & 31 & 0.22 & 0.25 & \begin{tabular}{l}\(c_{0}=1.000e+00\) \\ \(c_{1}=0.000e+00\) \\ \(c_{2}=2.859e-08\)\end{tabular} & $\begin{array}{l}( c_{0} \\ + c_{1}  \cdot  (N_{p}  \cdot  N_{ao}^2) \\ + c_{2}  \cdot  (N_{aux}  \cdot  N_{ao} ^ 2) )\end{array}$ \\ 
+\hline
+B3LYP-D3 & 284 & 32 & 0.16 & 0.15 & \begin{tabular}{l}\(c_{0}=1.000e+00\) \\ \(c_{1}=0.000e+00\) \\ \(c_{2}=3.747e-08\) \\ \(c_{3}=0.000e+00\)\end{tabular} & $\begin{array}{l}( c_{0} \\ + c_{1}  \cdot  (N_{p}  \cdot  N_{ao}^2) \\ + c_{2}  \cdot  (N_{aux}  \cdot  N_{ao} ^ 2) \\ + c_{3}  \cdot  (N_{occ}  \cdot  N_{ao} ^ 2  \cdot  N_{aux}) )\end{array}$ \\ 
+\hline
+M05-2X & 256 & 29 & 0.19 & 0.15 & \begin{tabular}{l}\(c_{0}=1.000e+00\) \\ \(c_{1}=0.000e+00\) \\ \(c_{2}=5.238e-08\) \\ \(c_{3}=0.000e+00\)\end{tabular} & $\begin{array}{l}( c_{0} \\ + c_{1}  \cdot  (N_{p}  \cdot  N_{ao}^2) \\ + c_{2}  \cdot  (N_{aux}  \cdot  N_{ao} ^ 2) \\ + c_{3}  \cdot  (N_{occ}  \cdot  N_{ao} ^ 2  \cdot  N_{aux}) )\end{array}$ \\ 
+\hline
+wB97X-D & 243 & 28 & 0.17 & 0.15 & \begin{tabular}{l}\(c_{0}=1.000e+00\) \\ \(c_{1}=0.000e+00\) \\ \(c_{2}=7.116e-08\) \\ \(c_{3}=0.000e+00\)\end{tabular} & $\begin{array}{l}( c_{0} \\ + c_{1}  \cdot  (N_{p}  \cdot  N_{ao}^2) \\ + c_{2}  \cdot  (N_{aux}  \cdot  N_{ao} ^ 2) \\ + c_{3}  \cdot  (N_{occ}  \cdot  N_{ao} ^ 2  \cdot  N_{aux}) )\end{array}$ \\ 
+\hline
+wB97X-V & 240 & 27 & 0.35 & 0.38 & \begin{tabular}{l}\(c_{0}=1.000e+00\) \\ \(c_{1}=0.000e+00\) \\ \(c_{2}=2.061e-07\) \\ \(c_{3}=0.000e+00\) \\ \(c_{4}=0.000e+00\)\end{tabular} & $\begin{array}{l}( c_{0} \\ + c_{1}  \cdot  (N_{p}  \cdot  N_{ao}^2) \\ + c_{2}  \cdot  (N_{aux}  \cdot  N_{ao} ^ 2) \\ + c_{3}  \cdot  (N_{occ}  \cdot  N_{ao} ^ 2  \cdot  N_{aux}) \\ + c_{4}  \cdot  (N_{p} ^ 2) )\end{array}$ \\ 
+\hline
 MP2 & 261 & 30 & 0.20 & 0.23 & \begin{tabular}{l}\(c_{0}=1.000e+00\) \\ \(c_{1}=3.246e-08\) \\ \(c_{2}=0.000e+00\) \\ \(c_{3}=0.000e+00\) \\ \(c_{4}=0.000e+00\) \\ \(c_{5}=0.000e+00\)\end{tabular} & $\begin{array}{l}( c_{0} \\ + c_{1}  \cdot  (N_{aux}  \cdot  N_{ao} ^ 2) \\ + c_{2}  \cdot  (N_{occ}  \cdot  N_{ao} ^ 2  \cdot  N_{aux}) \\ + c_{3}  \cdot  (N_{occ}  \cdot  N_{ao}^2  \cdot  N_{aux}) \\ + c_{4}  \cdot  (N_{occ}  \cdot  N_{virt}  \cdot  N_{ao}  \cdot  N_{aux}) \\ + c_{5}  \cdot  (N_{occ}^2  \cdot  N_{virt}^2  \cdot  N_{aux}) )\end{array}$ \\ 
+\hline
+B2PLYP-D3 & 226 & 26 & 0.16 & 0.21 & \begin{tabular}{l}\(c_{0}=1.000e+00\) \\ \(c_{1}=0.000e+00\) \\ \(c_{2}=5.327e-08\) \\ \(c_{3}=0.000e+00\) \\ \(c_{4}=0.000e+00\) \\ \(c_{5}=0.000e+00\) \\ \(c_{6}=0.000e+00\)\end{tabular} & $\begin{array}{l}( c_{0} \\ + c_{1}  \cdot  (N_{p}  \cdot  N_{ao}^2) \\ + c_{2}  \cdot  (N_{aux}  \cdot  N_{ao} ^ 2) \\ + c_{3}  \cdot  (N_{occ}  \cdot  N_{ao} ^ 2  \cdot  N_{aux}) \\ + c_{4}  \cdot  (N_{occ}  \cdot  N_{ao}^2  \cdot  N_{aux}) \\ + c_{5}  \cdot  (N_{occ}  \cdot  N_{virt}  \cdot  N_{ao}  \cdot  N_{aux}) \\ + c_{6}  \cdot  (N_{occ}^2  \cdot  N_{virt}^2  \cdot  N_{aux}) )\end{array}$ \\ 
+\hline
+FNO-CCSD & 227 & 26 & 0.12 & 0.14 & \begin{tabular}{l}\(c_{0}=9.998e-01\) \\ \(c_{1}=2.111e-02\) \\ \(c_{2}=2.172e-09\) \\ \(c_{3}=7.967e-11\) \\ \(c_{4}=1.075e-08\) \\ \(c_{5}=0.000e+00\) \\ \(c_{6}=0.000e+00\) \\ \(c_{7}=0.000e+00\)\end{tabular} & $\begin{array}{l}( c_{0} \\ + c_{1}  \cdot  (N_{occ}  \cdot  N_{virt}) \\ + c_{2}  \cdot  (N_{occ} ^ 3  \cdot  N_{virt} ^ 2) \\ + c_{3}  \cdot  (N_{occ} ^ 2  \cdot  N_{virt} ^ 2) \\ + c_{4}  \cdot  (N_{occ} ^ 2  \cdot  N_{virt} ^ 3) \\ + c_{5}  \cdot  (N_{occ} ^ 3  \cdot  N_{virt} ^ 3) \\ + c_{6}  \cdot  (N_{occ} ^ 2  \cdot  N_{virt} ^ 4) \\ + c_{7}  \cdot  (N_{occ} ^ 4  \cdot  N_{virt} ^ 2) )\end{array}$ \\ 
+\hline
+FNO-CCSD(T) & 227 & 26 & 0.44 & 0.41 & \begin{tabular}{l}\(c_{0}=9.998e-01\) \\ \(c_{1}=1.279e-01\) \\ \(c_{2}=0.000e+00\) \\ \(c_{3}=0.000e+00\) \\ \(c_{4}=0.000e+00\) \\ \(c_{5}=0.000e+00\) \\ \(c_{6}=0.000e+00\) \\ \(c_{7}=0.000e+00\) \\ \(c_{8}=0.000e+00\)\end{tabular} & $\begin{array}{l}( c_{0} \\ + c_{1}  \cdot  (N_{occ}  \cdot  N_{virt}) \\ + c_{2}  \cdot  (N_{occ} ^ 3  \cdot  N_{virt} ^ 2) \\ + c_{3}  \cdot  (N_{occ} ^ 2  \cdot  N_{virt} ^ 2) \\ + c_{4}  \cdot  (N_{occ} ^ 2  \cdot  N_{virt} ^ 3) \\ + c_{5}  \cdot  (N_{occ} ^ 3  \cdot  N_{virt} ^ 3) \\ + c_{6}  \cdot  (N_{occ} ^ 2  \cdot  N_{virt} ^ 4) \\ + c_{7}  \cdot  (N_{occ} ^ 4  \cdot  N_{virt} ^ 2) \\ + c_{8}  \cdot  (N_{occ} ^ 3  \cdot  N_{virt} ^ 4) )\end{array}$ \\ 
 \hline
 \end{longtable}
