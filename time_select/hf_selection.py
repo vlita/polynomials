@@ -192,6 +192,98 @@ time_polynomials = {
         + p[6] * (n_occ ** 2 * n_virt ** 4) 
         + p[7] * (n_occ ** 4 * n_virt ** 2)
     ),
+
+
+    # true fits below
+
+
+    "HF_true": lambda p, n_occ, n_virt, nbf_aux: (
+        p[0] 
+        + p[1] * (nbf_aux * (n_occ + n_virt) ** 2)          # J Build
+        + p[2] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)  # K Build
+        
+    ),
+
+    "MP2_true": lambda p, n_occ, n_virt, nbf_aux: (
+        p[0] 
+        + p[1] * (nbf_aux * (n_occ + n_virt) ** 2)               # J Build
+        + p[2] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)       # K Build
+        + p[3] * (n_occ * (n_occ + n_virt)**2 * nbf_aux)         # 3-index int 1
+        + p[4] * (n_occ * n_virt * (n_occ + n_virt) * nbf_aux)   # 3-index int 2 
+        + p[5] * (n_occ**2 * n_virt**2 * nbf_aux)                # int transform
+    ),
+
+    "wB97X-V_2_le": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+        p[0] + p[1] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
+        + p[2] * (nbf_aux * (n_occ + n_virt)**2) 
+        + p[3] * ((n_occ + n_virt) * np_total) 
+        + p[4] * ((0.5 * np_total) ** 2)
+    ),
+
+    "wB97X-V_2_gt": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+        p[0] + p[1] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
+        + p[2] * (nbf_aux * (n_occ + n_virt)**2) 
+        + p[3] * ((n_occ + n_virt) ** 1.1 * np_total) 
+        + p[4] * ((0.8*np_total) ** 2)
+    ),
+
+    "B3LYP-D3_1": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+        p[0] + p[1] * ((n_occ + n_virt) * np_total) 
+        + p[2] * (((n_occ + n_virt)**2 * nbf_aux) + ((n_occ + n_virt)**2 * nbf_aux) + nbf_aux**2) 
+        + p[3] * (nbf_aux**2 + nbf_aux**3)
+    ),
+
+    "B2PLYP-D3_2": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+        p[0]  # Constant overhead
+        + p[1] * (np_total * (n_occ + n_virt))  # DFT XC (B88+LYP): O(N_grid × N_bf^1.4)
+        + p[2] * (nbf_aux * (n_occ + n_virt)**2)  # J matrix: O(N_aux × N_bf^2)
+        + p[3] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # K matrix: O(N_bf^2 × N_occ × N_aux)
+        + p[4] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # MP2 transformation: O(N_aux × N_bf^2 × N_occ)
+        + p[5] * (nbf_aux**2 * n_occ * n_virt)  # MP2 fitting: O(N_occ × N_virt × N_aux^2)
+        + p[6] * (nbf_aux * n_occ**2 * n_virt**2)  # MP2 energy: O(N_occ^2 × N_virt^2 × N_aux)
+    ),
+    "B2PLYP-D3_2_1": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+        p[0]  # Constant overhead
+        + p[1] * (np_total * (n_occ + n_virt)**1.2)  # DFT XC (B88+LYP): O(N_grid × N_bf^1.4)
+        + p[2] * (nbf_aux * (n_occ + n_virt)**2)  # J matrix: O(N_aux × N_bf^2)
+        + p[3] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # K matrix: O(N_bf^2 × N_occ × N_aux)
+        + p[4] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # MP2 transformation: O(N_aux × N_bf^2 × N_occ)
+        + p[5] * (nbf_aux**2 * n_occ * n_virt)  # MP2 fitting: O(N_occ × N_virt × N_aux^2)
+        + p[6] * (nbf_aux * n_occ**2 * n_virt**2)  # MP2 energy: O(N_occ^2 × N_virt^2 × N_aux)
+    ),
+
+    "M05-2X_2": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+        p[0]  # Constant overhead
+        + p[1] * (np_total * (n_occ + n_virt)**1.2)  # Meta-GGA XC: O(N_grid × N_bf^1.4)
+        + p[2] * (nbf_aux * (n_occ + n_virt)**2)  # J matrix: O(N_aux × N_bf^2)
+        + p[3] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # K matrix: O(N_bf^2 × N_occ × N_aux)
+    ),  
+
+    "PBE-D3_2": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+        p[0] 
+        + p[1] * ((n_occ + n_virt)**1.25 * np_total) 
+        + p[2] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
+        + p[3] * (nbf_aux * (n_occ + n_virt)**2)
+    ),
+
+    "PBE-D3_2_1": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+        p[0] 
+        + p[1] * ((n_occ + n_virt)**1.25 * np_total) 
+        + p[2] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
+        + p[3] * (nbf_aux * (n_occ + n_virt)**2)
+    ),
+
+    "CCSD_test_1": lambda p, n_occ, n_virt: (
+        p[0] 
+        + p[1] * (n_occ ** 1 * n_virt ** 1) 
+        + p[2] * (n_occ ** 3 * n_virt ** 2) 
+        + p[3] * (n_occ ** 2 * n_virt ** 2) 
+        + p[4] * (n_occ ** 2 * n_virt ** 3) 
+        + p[5] * (n_occ ** 3 * n_virt ** 3) 
+        + p[6] * (n_occ ** 2 * n_virt ** 4) 
+        + p[7] * (n_occ ** 4 * n_virt ** 2)
+    ),
+
 }
 
 if(COMPOSITE_POLYS):
@@ -259,65 +351,65 @@ if(COMPOSITE_POLYS):
 
 else:
     POLY_CONFIGS = {
-        "wB97X-V": {
-            "split": None,
-            "split_type": "nbf_aux",
-            "le": ("wB97X-V_2_le", {"n_params": 5, "bounds": (0.0, None)}),
-            "gt": ("wB97X-V_2_gt", {"n_params": 5, "bounds": (0.0, None)}),
-        },
-        "wB97X-D": {
-            "split": None,
-            "split_type": "nbf_aux",
-            "le": ("wB97X-V_2_le", {"n_params": 5, "bounds": (0.0, None)}),
-            "gt": ("wB97X-V_2_gt", {"n_params": 5, "bounds": (0.0, None)}),
-        },        
-        "B3LYP-D3": {
-            "split": None,
-            "split_type": "np_total",
-            "le": ("B3LYP-D3_1", {"n_params": 4, "bounds": (0.0, None)}),
-            "gt": ("B3LYP-D3_1", {"n_params": 4, "bounds": (0.0, None)}),
-        },
-        "B2PLYP-D3": {
-            "split": None,
-            "split_type": "np_total",
-            "le": ("B2PLYP-D3_2", {"n_params": 7, "bounds": (0.0, None)}),
-            "gt": ("B2PLYP-D3_2_1", {"n_params": 7, "bounds": (0.0, None)}),
-        },
+        # "wB97X-V": {
+        #     "split": None,
+        #     "split_type": "nbf_aux",
+        #     "le": ("wB97X-V_2_le", {"n_params": 5, "bounds": (0.0, None)}),
+        #     "gt": ("wB97X-V_2_gt", {"n_params": 5, "bounds": (0.0, None)}),
+        # },
+        # "wB97X-D": {
+        #     "split": None,
+        #     "split_type": "nbf_aux",
+        #     "le": ("wB97X-V_2_le", {"n_params": 5, "bounds": (0.0, None)}),
+        #     "gt": ("wB97X-V_2_gt", {"n_params": 5, "bounds": (0.0, None)}),
+        # },        
+        # "B3LYP-D3": {
+        #     "split": None,
+        #     "split_type": "np_total",
+        #     "le": ("B3LYP-D3_1", {"n_params": 4, "bounds": (0.0, None)}),
+        #     "gt": ("B3LYP-D3_1", {"n_params": 4, "bounds": (0.0, None)}),
+        # },
+        # "B2PLYP-D3": {
+        #     "split": None,
+        #     "split_type": "np_total",
+        #     "le": ("B2PLYP-D3_2", {"n_params": 7, "bounds": (0.0, None)}),
+        #     "gt": ("B2PLYP-D3_2_1", {"n_params": 7, "bounds": (0.0, None)}),
+        # },
         "MP2": {
             "split": None,
             "split_type": "nbf_aux",
-            "le": ("MP2_test6", {"n_params": 6, "bounds": (0.0, None)}),
+            "le": ("MP2_true", {"n_params": 6, "bounds": (0.0, None)}),
             "gt": ("MP2_test7", {"n_params": 6, "bounds": (0.0, None)}),
         },
-        "HF": {
-            "split": None,
-            "split_type": "nbf_aux",
-            "le": ("HF_test4", {"n_params": 3, "bounds": (0.0, None)}),
-            "gt": ("HF_test4", {"n_params": 3, "bounds": (0.0, None)}),
-        },
-        "M05-2X": {
-            "split": None,
-            "split_type": "nbf_aux",
-            "le": ("M05-2X_2", {"n_params": 4, "bounds": (0.0, None)}),
-            "gt": ("M05-2X_2", {"n_params": 4, "bounds": (0.0, None)}),
-        },
-        "PBE-D3": {
-            "split": None,
-            "split_type": "basis",
-            "le": ("PBE-D3_2", {"n_params": 4, "bounds": (0.0, None)}),
-            "gt": ("PBE-D3_2_1", {"n_params": 4, "bounds": (0.0, None)}),
-        },
-        "FNO-CCSD(T)": {
-            "split": None,
-            "split_type": "np_total",
-            "le": ("CCSD_test_1", {"n_params": 8, "bounds": (0.0, None)}),
-            "gt": ("M05-2X_1", {"n_params": 3, "bounds": (0.0, None)}),
-        },
-        "FNO-CCSD": {
-            "split": None,
-            "le": ("CCSD_test_1", {"n_params": 8, "bounds": (0.0, None)}),
-            "gt": ("M05-2X_1", {"n_params": 3, "bounds": (0.0, None)}),
-        },
+        # "HF": {
+        #     "split": None,
+        #     "split_type": "nbf_aux",
+        #     "le": ("HF_test4", {"n_params": 3, "bounds": (0.0, None)}),
+        #     "gt": ("HF_test4", {"n_params": 3, "bounds": (0.0, None)}),
+        # },
+        # "M05-2X": {
+        #     "split": None,
+        #     "split_type": "nbf_aux",
+        #     "le": ("M05-2X_2", {"n_params": 4, "bounds": (0.0, None)}),
+        #     "gt": ("M05-2X_2", {"n_params": 4, "bounds": (0.0, None)}),
+        # },
+        # "PBE-D3": {
+        #     "split": None,
+        #     "split_type": "basis",
+        #     "le": ("PBE-D3_2", {"n_params": 4, "bounds": (0.0, None)}),
+        #     "gt": ("PBE-D3_2_1", {"n_params": 4, "bounds": (0.0, None)}),
+        # },
+        # "FNO-CCSD(T)": {
+        #     "split": None,
+        #     "split_type": "np_total",
+        #     "le": ("CCSD_test_1", {"n_params": 8, "bounds": (0.0, None)}),
+        #     "gt": ("M05-2X_1", {"n_params": 3, "bounds": (0.0, None)}),
+        # },
+        # "FNO-CCSD": {
+        #     "split": None,
+        #     "le": ("M05-2X_2", {"n_params": 4, "bounds": (0.0, None)}),
+        #     "gt": ("M05-2X_1", {"n_params": 3, "bounds": (0.0, None)}),
+        # },
     }
 
 # ---------------------------------------------------------------------------
@@ -418,8 +510,15 @@ def format_polynomial_expression(poly_func):
     if "lambda" not in src:
         return ""
     expr = src.split(":", 1)[1].strip()
+    if expr.startswith("lambda"):
+        expr = expr.split(":", 1)[1].strip()
     if expr.startswith("(") and expr.endswith(")"):
         expr = expr[1:-1]
+    expr = re.sub(r"#.*", "", expr)
+    expr = " ".join(expr.split())
+    expr = re.sub(r",\s*$", "", expr)
+    expr = re.sub(r"\(n_occ\s*\+\s*n_virt\)", "N_{ao}", expr)
+    expr = re.sub(r"n_occ\s*\+\s*n_virt", "N_{ao}", expr)
     expr = re.sub(r"p\[(\d+)\]", r"c_{\1}", expr)
     replacements = {
         "n_occ": "N_{occ}",
@@ -433,17 +532,31 @@ def format_polynomial_expression(poly_func):
     expr = expr.replace("**", "^")
     expr = expr.replace("*", " \\cdot ")
     expr = expr.replace("+ -", "- ")
-    return "$\\displaystyle \\log_{10}(\\left|" + expr + "\\right|) $"
+    expr = expr.replace(" - ", " + - ")
+    parts = [part.strip() for part in expr.split(" + ") if part.strip()]
+    if not parts:
+        return ""
+    lines = []
+    for i, part in enumerate(parts):
+        if i == 0:
+            lines.append(part)
+        elif part.startswith("-"):
+            lines.append(part)
+        else:
+            lines.append(f"+ {part}")
+    expr_lines = " \\\\ ".join(lines)
+    return "$\\begin{array}{l}" + expr_lines + "\\end{array}$"
 
 
 def write_latex_table(rows, output_path):
     header = (
         "\\section{Time Estimation Equations}\n\n"
-        "\\begin{longtable}{|l|l|c|c|c|c|c|c|c|c|p{4.5cm}|p{6cm}|}\n"
+        "\\small\n"
+        "\\setlength{\\tabcolsep}{3pt}\n"
+        "\\begin{longtable}{|l|c|c|c|c|p{3.2cm}|p{5.0cm}|}\n"
         "\\hline\n"
-        "\\textbf{Method} & \\textbf{Split} & \\textbf{$N_{train}$} & \\textbf{$N_{test}$} "
-        "& \\textbf{Train RMSE} & \\textbf{Test RMSE} & \\textbf{Train MAE} & \\textbf{Test MAE} "
-        "& \\textbf{Min $|e|$} & \\textbf{Max $|e|$} & \\textbf{Coeffs} & \\textbf{Functional Form} \\\\ \n"
+        "\\textbf{Method} & \\textbf{\# train} & \\textbf{\# test} "
+        "& \\textbf{Train MAE} & \\textbf{Test MAE} & \\textbf{Coeffs} & \\textbf{Functional Form} \\\\ \n"
         "\\hline\n"
         "\\endhead\n"
     )
@@ -451,12 +564,12 @@ def write_latex_table(rows, output_path):
     lines = [header]
     for row in rows:
         method = latex_escape(row["method"]) if row.get("method") else ""
-        split_label = latex_escape(row.get("split_label", ""))
+        split_label = row.get("split_label", "")
+        if COMPOSITE_POLYS and split_label in {"high", "low"}:
+            method = latex_escape(f"{row['method']} ({split_label})")
         lines.append(
-            f"{method} & {split_label} & {row['n_train']} & {row['n_test']} & "
-            f"{row['train_rmse']:.4f} & {row['test_rmse']:.4f} & "
-            f"{row['train_mae']:.4f} & {row['test_mae']:.4f} & "
-            f"{row['min_abs_err']:.4f} & {row['max_abs_err']:.4f} & "
+            f"{method} & {row['n_train']} & {row['n_test']} & "
+            f"{row['train_mae']:.2f} & {row['test_mae']:.2f} & "
             f"{row['coeffs']} & {row['func']} \\\\ \n\\hline\n"
         )
 
@@ -869,15 +982,30 @@ def run_method(method):
 def main():
     apply_plot_style()
     latex_rows = []
-    for method in sorted(POLY_CONFIGS.keys()):
+    method_order = [
+        "HF",
+        "MP2",
+        "PBE-D3",
+        "B3LYP-D3",
+        "M05-2X",
+        "B2PLYP-D3",
+        "wB97X-D",
+        "wB97X-V",
+        "FNO-CCSD",
+        "FNO-CCSD(T)",
+    ]
+    ordered_methods = [m for m in method_order if m in POLY_CONFIGS]
+    remaining_methods = sorted(m for m in POLY_CONFIGS.keys() if m not in ordered_methods)
+    for method in ordered_methods + remaining_methods:
         print("\n" + "=" * 60)
         print(f"METHOD: {method}")
         print("=" * 60)
         method_rows = run_method(method)
         if method_rows:
-            for idx, row in enumerate(method_rows):
-                if idx > 0:
-                    row["method"] = ""
+            if not COMPOSITE_POLYS:
+                for idx, row in enumerate(method_rows):
+                    if idx > 0:
+                        row["method"] = ""
             latex_rows.extend(method_rows)
 
     if WRITE_LATEX_TABLE and latex_rows:
