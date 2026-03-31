@@ -1,0 +1,179 @@
+---------------------------------------
+Begin Slurm Prolog: Mar-12-2026 22:23:56
+Job ID:    4408213
+User ID:   vlita3
+Account:   chem
+Job name:  tv_pep2333_FNOCCSD
+Partition: coc-cpu
+QOS:       coc-ice
+---------------------------------------
+========================================
+Job started : Thu Mar 12 10:23:56 PM EDT 2026
+Node        : atl1-1-02-010-8-1.pace.gatech.edu
+Dataset     : pepconf_2333
+Method      : FNO-CCSD
+Threads     : 8
+========================================
+[2026-03-12 22:24:08] [START] dataset=pepconf_2333  method=FNO-CCSD  threads=8
+[2026-03-12 22:24:08]         input pkl : /home/hice1/vlita3/ice_timing_vars/data/pepconf_2333_20.pkl
+[2026-03-12 22:24:08]         output pkl: /home/hice1/vlita3/ice_timing_vars/output/pepconf_2333/pepconf_2333_FNO-CCSD.pkl
+[2026-03-12 22:24:08]         dataframe shape: (120, 8)  |  mol column: 'qcel_dimer'
+[2026-03-12 22:24:08]         psi4 version: 1.9.1  |  threads: 8
+[2026-03-12 22:24:09]   [   1/120] ALA_ALA_0            cc-pVDZ        FNO-CCSD     nocc=54  nvirt=217  np=406612  nbf_aux=994
+[2026-03-12 22:24:11]   [   2/120] ALA_ALA_0            cc-pVTZ        FNO-CCSD     nocc=54  nvirt=576  np=407568  nbf_aux=1584
+[2026-03-12 22:24:12]   [   3/120] ALA_ALA_0            cc-pVQZ        FNO-CCSD     nocc=54  nvirt=1166  np=408268  nbf_aux=2673
+[2026-03-12 22:24:14]   [   4/120] ALA_ALA_0            aug-cc-pVDZ    FNO-CCSD     nocc=54  nvirt=403  np=410197  nbf_aux=1353
+[2026-03-12 22:24:15]   [   5/120] ALA_ALA_0            aug-cc-pVTZ    FNO-CCSD     nocc=54  nvirt=935  np=410197  nbf_aux=2174
+[2026-03-12 22:24:17]   [   6/120] ALA_ALA_0            aug-cc-pVQZ    FNO-CCSD     nocc=54  nvirt=1756  np=410197  nbf_aux=3552
+[2026-03-12 22:24:17]   [CHECKPOINT] 6/120 rows saved
+[2026-03-12 22:24:19]   [   7/120] ALA_ASN_0            cc-pVDZ        FNO-CCSD     nocc=65  nvirt=253  np=455925  nbf_aux=1176
+[2026-03-12 22:24:20]   [   8/120] ALA_ASN_0            cc-pVTZ        FNO-CCSD     nocc=65  nvirt=669  np=456960  nbf_aux=1857
+[2026-03-12 22:24:22]   [   9/120] ALA_ASN_0            cc-pVQZ        FNO-CCSD     nocc=65  nvirt=1350  np=457706  nbf_aux=3124
+[2026-03-12 22:24:24]   [  10/120] ALA_ASN_0            aug-cc-pVDZ    FNO-CCSD     nocc=65  nvirt=470  np=459711  nbf_aux=1592
+[2026-03-12 22:24:26]   [  11/120] ALA_ASN_0            aug-cc-pVTZ    FNO-CCSD     nocc=65  nvirt=1085  np=459711  nbf_aux=2538
+[2026-03-12 22:24:28]   [  12/120] ALA_ASN_0            aug-cc-pVQZ    FNO-CCSD     nocc=65  nvirt=2031  np=459711  nbf_aux=4136
+[2026-03-12 22:24:28]   [CHECKPOINT] 12/120 rows saved
+[2026-03-12 22:24:30]   [  13/120] ALA_CYS_0            cc-pVDZ        FNO-CCSD     nocc=62  nvirt=227  np=419135  nbf_aux=1070
+[2026-03-12 22:24:31]   [  14/120] ALA_CYS_0            cc-pVTZ        FNO-CCSD     nocc=62  nvirt=602  np=420361  nbf_aux=1706
+[2026-03-12 22:24:33]   [  15/120] ALA_CYS_0            cc-pVQZ        FNO-CCSD     nocc=62  nvirt=1217  np=421442  nbf_aux=2831
+[2026-03-12 22:24:34]   [  16/120] ALA_CYS_0            aug-cc-pVDZ    FNO-CCSD     nocc=62  nvirt=422  np=423386  nbf_aux=1445
+[2026-03-12 22:24:36]   [  17/120] ALA_CYS_0            aug-cc-pVTZ    FNO-CCSD     nocc=62  nvirt=977  np=423455  nbf_aux=2321
+[2026-03-12 22:24:37]   [  18/120] ALA_CYS_0            aug-cc-pVQZ    FNO-CCSD     nocc=62  nvirt=1832  np=423507  nbf_aux=3746
+[2026-03-12 22:24:37]   [CHECKPOINT] 18/120 rows saved
+[2026-03-12 22:24:38]   [  19/120] ALA_GLY_0            cc-pVDZ        FNO-CCSD     nocc=50  nvirt=197  np=365420  nbf_aux=910
+[2026-03-12 22:24:40]   [  20/120] ALA_GLY_0            cc-pVTZ        FNO-CCSD     nocc=50  nvirt=522  np=366342  nbf_aux=1443
+[2026-03-12 22:24:41]   [  21/120] ALA_GLY_0            cc-pVQZ        FNO-CCSD     nocc=50  nvirt=1055  np=367053  nbf_aux=2431
+[2026-03-12 22:24:42]   [  22/120] ALA_GLY_0            aug-cc-pVDZ    FNO-CCSD     nocc=50  nvirt=366  np=368945  nbf_aux=1235
+[2026-03-12 22:24:43]   [  23/120] ALA_GLY_0            aug-cc-pVTZ    FNO-CCSD     nocc=50  nvirt=847  np=368945  nbf_aux=1976
+[2026-03-12 22:24:44]   [  24/120] ALA_GLY_0            aug-cc-pVQZ    FNO-CCSD     nocc=50  nvirt=1588  np=368945  nbf_aux=3224
+[2026-03-12 22:24:44]   [CHECKPOINT] 24/120 rows saved
+[2026-03-12 22:24:46]   [  25/120] ALA_PRO_0            cc-pVDZ        FNO-CCSD     nocc=61  nvirt=248  np=458658  nbf_aux=1134
+[2026-03-12 22:24:48]   [  26/120] ALA_PRO_0            cc-pVTZ        FNO-CCSD     nocc=61  nvirt=657  np=459654  nbf_aux=1806
+[2026-03-12 22:24:50]   [  27/120] ALA_PRO_0            cc-pVQZ        FNO-CCSD     nocc=61  nvirt=1329  np=460394  nbf_aux=3047
+[2026-03-12 22:24:52]   [  28/120] ALA_PRO_0            aug-cc-pVDZ    FNO-CCSD     nocc=61  nvirt=460  np=462408  nbf_aux=1543
+[2026-03-12 22:24:53]   [  29/120] ALA_PRO_0            aug-cc-pVTZ    FNO-CCSD     nocc=61  nvirt=1066  np=462408  nbf_aux=2478
+[2026-03-12 22:24:56]   [  30/120] ALA_PRO_0            aug-cc-pVQZ    FNO-CCSD     nocc=61  nvirt=2001  np=462408  nbf_aux=4048
+[2026-03-12 22:24:56]   [CHECKPOINT] 30/120 rows saved
+[2026-03-12 22:24:57]   [  31/120] ALA_SER_0            cc-pVDZ        FNO-CCSD     nocc=58  nvirt=227  np=420653  nbf_aux=1050
+[2026-03-12 22:24:58]   [  32/120] ALA_SER_0            cc-pVTZ        FNO-CCSD     nocc=58  nvirt=602  np=421594  nbf_aux=1665
+[2026-03-12 22:25:00]   [  33/120] ALA_SER_0            cc-pVQZ        FNO-CCSD     nocc=58  nvirt=1217  np=422325  nbf_aux=2805
+[2026-03-12 22:25:01]   [  34/120] ALA_SER_0            aug-cc-pVDZ    FNO-CCSD     nocc=58  nvirt=422  np=424210  nbf_aux=1425
+[2026-03-12 22:25:03]   [  35/120] ALA_SER_0            aug-cc-pVTZ    FNO-CCSD     nocc=58  nvirt=977  np=424210  nbf_aux=2280
+[2026-03-12 22:25:05]   [  36/120] ALA_SER_0            aug-cc-pVQZ    FNO-CCSD     nocc=58  nvirt=1832  np=424210  nbf_aux=3720
+[2026-03-12 22:25:05]   [CHECKPOINT] 36/120 rows saved
+[2026-03-12 22:25:06]   [  37/120] ASP_ALA_0            cc-pVDZ        FNO-CCSD     nocc=65  nvirt=243  np=429645  nbf_aux=1148
+[2026-03-12 22:25:08]   [  38/120] ASP_ALA_0            cc-pVTZ        FNO-CCSD     nocc=65  nvirt=641  np=430736  nbf_aux=1797
+[2026-03-12 22:25:09]   [  39/120] ASP_ALA_0            cc-pVQZ        FNO-CCSD     nocc=65  nvirt=1290  np=431617  nbf_aux=3014
+[2026-03-12 22:25:11]   [  40/120] ASP_ALA_0            aug-cc-pVDZ    FNO-CCSD     nocc=65  nvirt=452  np=433839  nbf_aux=1546
+[2026-03-12 22:25:12]   [  41/120] ASP_ALA_0            aug-cc-pVTZ    FNO-CCSD     nocc=65  nvirt=1039  np=433839  nbf_aux=2446
+[2026-03-12 22:25:14]   [  42/120] ASP_ALA_0            aug-cc-pVQZ    FNO-CCSD     nocc=65  nvirt=1939  np=433839  nbf_aux=3976
+[2026-03-12 22:25:14]   [CHECKPOINT] 42/120 rows saved
+[2026-03-12 22:25:16]   [  43/120] ASP_ASP_0            cc-pVDZ        FNO-CCSD     nocc=75  nvirt=270  np=454289  nbf_aux=1302
+[2026-03-12 22:25:18]   [  44/120] ASP_ASP_0            cc-pVTZ        FNO-CCSD     nocc=75  nvirt=707  np=455434  nbf_aux=2010
+[2026-03-12 22:25:20]   [  45/120] ASP_ASP_0            cc-pVQZ        FNO-CCSD     nocc=75  nvirt=1415  np=456513  nbf_aux=3355
+[2026-03-12 22:25:21]   [  46/120] ASP_ASP_0            aug-cc-pVDZ    FNO-CCSD     nocc=75  nvirt=502  np=458895  nbf_aux=1739
+[2026-03-12 22:25:23]   [  47/120] ASP_ASP_0            aug-cc-pVTZ    FNO-CCSD     nocc=75  nvirt=1144  np=458895  nbf_aux=2718
+[2026-03-12 22:25:26]   [  48/120] ASP_ASP_0            aug-cc-pVQZ    FNO-CCSD     nocc=75  nvirt=2123  np=458895  nbf_aux=4400
+[2026-03-12 22:25:26]   [CHECKPOINT] 48/120 rows saved
+[2026-03-12 22:25:27]   [  49/120] ASP_GLY_0            cc-pVDZ        FNO-CCSD     nocc=61  nvirt=223  np=389080  nbf_aux=1064
+[2026-03-12 22:25:28]   [  50/120] ASP_GLY_0            cc-pVTZ        FNO-CCSD     nocc=61  nvirt=587  np=390035  nbf_aux=1656
+[2026-03-12 22:25:30]   [  51/120] ASP_GLY_0            cc-pVQZ        FNO-CCSD     nocc=61  nvirt=1179  np=390956  nbf_aux=2772
+[2026-03-12 22:25:31]   [  52/120] ASP_GLY_0            aug-cc-pVDZ    FNO-CCSD     nocc=61  nvirt=415  np=393090  nbf_aux=1428
+[2026-03-12 22:25:32]   [  53/120] ASP_GLY_0            aug-cc-pVTZ    FNO-CCSD     nocc=61  nvirt=951  np=393090  nbf_aux=2248
+[2026-03-12 22:25:34]   [  54/120] ASP_GLY_0            aug-cc-pVQZ    FNO-CCSD     nocc=61  nvirt=1771  np=393090  nbf_aux=3648
+[2026-03-12 22:25:34]   [CHECKPOINT] 54/120 rows saved
+[2026-03-12 22:25:35]   [  55/120] ASP_SER_0            cc-pVDZ        FNO-CCSD     nocc=69  nvirt=253  np=441350  nbf_aux=1204
+[2026-03-12 22:25:37]   [  56/120] ASP_SER_0            cc-pVTZ        FNO-CCSD     nocc=69  nvirt=667  np=442412  nbf_aux=1878
+[2026-03-12 22:25:39]   [  57/120] ASP_SER_0            cc-pVQZ        FNO-CCSD     nocc=69  nvirt=1341  np=443282  nbf_aux=3146
+[2026-03-12 22:25:40]   [  58/120] ASP_SER_0            aug-cc-pVDZ    FNO-CCSD     nocc=69  nvirt=471  np=445420  nbf_aux=1618
+[2026-03-12 22:25:42]   [  59/120] ASP_SER_0            aug-cc-pVTZ    FNO-CCSD     nocc=69  nvirt=1081  np=445420  nbf_aux=2552
+[2026-03-12 22:25:44]   [  60/120] ASP_SER_0            aug-cc-pVQZ    FNO-CCSD     nocc=69  nvirt=2015  np=445420  nbf_aux=4144
+[2026-03-12 22:25:44]   [CHECKPOINT] 60/120 rows saved
+[2026-03-12 22:25:45]   [  61/120] GLU_GLY_0            cc-pVDZ        FNO-CCSD     nocc=65  nvirt=243  np=427769  nbf_aux=1148
+[2026-03-12 22:25:47]   [  62/120] GLU_GLY_0            cc-pVTZ        FNO-CCSD     nocc=65  nvirt=641  np=428761  nbf_aux=1797
+[2026-03-12 22:25:49]   [  63/120] GLU_GLY_0            cc-pVQZ        FNO-CCSD     nocc=65  nvirt=1290  np=429659  nbf_aux=3014
+[2026-03-12 22:25:50]   [  64/120] GLU_GLY_0            aug-cc-pVDZ    FNO-CCSD     nocc=65  nvirt=452  np=431785  nbf_aux=1546
+[2026-03-12 22:25:52]   [  65/120] GLU_GLY_0            aug-cc-pVTZ    FNO-CCSD     nocc=65  nvirt=1039  np=431785  nbf_aux=2446
+[2026-03-12 22:25:54]   [  66/120] GLU_GLY_0            aug-cc-pVQZ    FNO-CCSD     nocc=65  nvirt=1939  np=431785  nbf_aux=3976
+[2026-03-12 22:25:54]   [CHECKPOINT] 66/120 rows saved
+[2026-03-12 22:25:55]   [  67/120] GLY_ASN_0            cc-pVDZ        FNO-CCSD     nocc=61  nvirt=233  np=415340  nbf_aux=1092
+[2026-03-12 22:25:56]   [  68/120] GLY_ASN_0            cc-pVTZ        FNO-CCSD     nocc=61  nvirt=615  np=416354  nbf_aux=1716
+[2026-03-12 22:25:58]   [  69/120] GLY_ASN_0            cc-pVQZ        FNO-CCSD     nocc=61  nvirt=1239  np=417134  nbf_aux=2882
+[2026-03-12 22:25:59]   [  70/120] GLY_ASN_0            aug-cc-pVDZ    FNO-CCSD     nocc=61  nvirt=433  np=419119  nbf_aux=1474
+[2026-03-12 22:26:01]   [  71/120] GLY_ASN_0            aug-cc-pVTZ    FNO-CCSD     nocc=61  nvirt=997  np=419119  nbf_aux=2340
+[2026-03-12 22:26:03]   [  72/120] GLY_ASN_0            aug-cc-pVQZ    FNO-CCSD     nocc=61  nvirt=1863  np=419119  nbf_aux=3808
+[2026-03-12 22:26:03]   [CHECKPOINT] 72/120 rows saved
+[2026-03-12 22:26:04]   [  73/120] GLY_CYS_0            cc-pVDZ        FNO-CCSD     nocc=58  nvirt=207  np=377311  nbf_aux=986
+[2026-03-12 22:26:05]   [  74/120] GLY_CYS_0            cc-pVTZ        FNO-CCSD     nocc=58  nvirt=548  np=378565  nbf_aux=1565
+[2026-03-12 22:26:06]   [  75/120] GLY_CYS_0            cc-pVQZ        FNO-CCSD     nocc=58  nvirt=1106  np=379601  nbf_aux=2589
+[2026-03-12 22:26:08]   [  76/120] GLY_CYS_0            aug-cc-pVDZ    FNO-CCSD     nocc=58  nvirt=385  np=381617  nbf_aux=1327
+[2026-03-12 22:26:09]   [  77/120] GLY_CYS_0            aug-cc-pVTZ    FNO-CCSD     nocc=58  nvirt=889  np=381689  nbf_aux=2123
+[2026-03-12 22:26:10]   [  78/120] GLY_CYS_0            aug-cc-pVQZ    FNO-CCSD     nocc=58  nvirt=1664  np=381741  nbf_aux=3418
+[2026-03-12 22:26:10]   [CHECKPOINT] 78/120 rows saved
+[2026-03-12 22:26:11]   [  79/120] GLY_GLY_0            cc-pVDZ        FNO-CCSD     nocc=46  nvirt=177  np=325521  nbf_aux=826
+[2026-03-12 22:26:12]   [  80/120] GLY_GLY_0            cc-pVTZ        FNO-CCSD     nocc=46  nvirt=468  np=326403  nbf_aux=1302
+[2026-03-12 22:26:13]   [  81/120] GLY_GLY_0            cc-pVQZ        FNO-CCSD     nocc=46  nvirt=944  np=327144  nbf_aux=2189
+[2026-03-12 22:26:14]   [  82/120] GLY_GLY_0            aug-cc-pVDZ    FNO-CCSD     nocc=46  nvirt=329  np=328964  nbf_aux=1117
+[2026-03-12 22:26:15]   [  83/120] GLY_GLY_0            aug-cc-pVTZ    FNO-CCSD     nocc=46  nvirt=759  np=328964  nbf_aux=1778
+[2026-03-12 22:26:16]   [  84/120] GLY_GLY_0            aug-cc-pVQZ    FNO-CCSD     nocc=46  nvirt=1420  np=328964  nbf_aux=2896
+[2026-03-12 22:26:16]   [CHECKPOINT] 84/120 rows saved
+[2026-03-12 22:26:18]   [  85/120] GLY_HIS_0            cc-pVDZ        FNO-CCSD     nocc=67  nvirt=260  np=454276  nbf_aux=1218
+[2026-03-12 22:26:19]   [  86/120] GLY_HIS_0            cc-pVTZ        FNO-CCSD     nocc=67  nvirt=683  np=455376  nbf_aux=1908
+[2026-03-12 22:26:21]   [  87/120] GLY_HIS_0            cc-pVQZ        FNO-CCSD     nocc=67  nvirt=1373  np=456189  nbf_aux=3201
+[2026-03-12 22:26:23]   [  88/120] GLY_HIS_0            aug-cc-pVDZ    FNO-CCSD     nocc=67  nvirt=482  np=458457  nbf_aux=1641
+[2026-03-12 22:26:25]   [  89/120] GLY_HIS_0            aug-cc-pVTZ    FNO-CCSD     nocc=67  nvirt=1106  np=458457  nbf_aux=2598
+[2026-03-12 22:26:27]   [  90/120] GLY_HIS_0            aug-cc-pVQZ    FNO-CCSD     nocc=67  nvirt=2063  np=458457  nbf_aux=4224
+[2026-03-12 22:26:27]   [CHECKPOINT] 90/120 rows saved
+[2026-03-12 22:26:29]   [  91/120] GLY_PRO_0            cc-pVDZ        FNO-CCSD     nocc=57  nvirt=228  np=416426  nbf_aux=1050
+[2026-03-12 22:26:30]   [  92/120] GLY_PRO_0            cc-pVTZ        FNO-CCSD     nocc=57  nvirt=603  np=417391  nbf_aux=1665
+[2026-03-12 22:26:32]   [  93/120] GLY_PRO_0            cc-pVQZ        FNO-CCSD     nocc=57  nvirt=1218  np=418117  nbf_aux=2805
+[2026-03-12 22:26:33]   [  94/120] GLY_PRO_0            aug-cc-pVDZ    FNO-CCSD     nocc=57  nvirt=423  np=420094  nbf_aux=1425
+[2026-03-12 22:26:35]   [  95/120] GLY_PRO_0            aug-cc-pVTZ    FNO-CCSD     nocc=57  nvirt=978  np=420094  nbf_aux=2280
+[2026-03-12 22:26:36]   [  96/120] GLY_PRO_0            aug-cc-pVQZ    FNO-CCSD     nocc=57  nvirt=1833  np=420094  nbf_aux=3720
+[2026-03-12 22:26:36]   [CHECKPOINT] 96/120 rows saved
+[2026-03-12 22:26:37]   [  97/120] GLY_SER_0            cc-pVDZ        FNO-CCSD     nocc=54  nvirt=207  np=381280  nbf_aux=966
+[2026-03-12 22:26:39]   [  98/120] GLY_SER_0            cc-pVTZ        FNO-CCSD     nocc=54  nvirt=548  np=382305  nbf_aux=1524
+[2026-03-12 22:26:40]   [  99/120] GLY_SER_0            cc-pVQZ        FNO-CCSD     nocc=54  nvirt=1106  np=383100  nbf_aux=2563
+[2026-03-12 22:26:41]   [ 100/120] GLY_SER_0            aug-cc-pVDZ    FNO-CCSD     nocc=54  nvirt=385  np=385129  nbf_aux=1307
+[2026-03-12 22:26:42]   [ 101/120] GLY_SER_0            aug-cc-pVTZ    FNO-CCSD     nocc=54  nvirt=889  np=385129  nbf_aux=2082
+[2026-03-12 22:26:44]   [ 102/120] GLY_SER_0            aug-cc-pVQZ    FNO-CCSD     nocc=54  nvirt=1664  np=385129  nbf_aux=3392
+[2026-03-12 22:26:44]   [CHECKPOINT] 102/120 rows saved
+[2026-03-12 22:26:45]   [ 103/120] GLY_THR_0            cc-pVDZ        FNO-CCSD     nocc=58  nvirt=227  np=418076  nbf_aux=1050
+[2026-03-12 22:26:47]   [ 104/120] GLY_THR_0            cc-pVTZ        FNO-CCSD     nocc=58  nvirt=602  np=419033  nbf_aux=1665
+[2026-03-12 22:26:48]   [ 105/120] GLY_THR_0            cc-pVQZ        FNO-CCSD     nocc=58  nvirt=1217  np=419785  nbf_aux=2805
+[2026-03-12 22:26:50]   [ 106/120] GLY_THR_0            aug-cc-pVDZ    FNO-CCSD     nocc=58  nvirt=422  np=421640  nbf_aux=1425
+[2026-03-12 22:26:51]   [ 107/120] GLY_THR_0            aug-cc-pVTZ    FNO-CCSD     nocc=58  nvirt=977  np=421640  nbf_aux=2280
+[2026-03-12 22:26:53]   [ 108/120] GLY_THR_0            aug-cc-pVQZ    FNO-CCSD     nocc=58  nvirt=1832  np=421640  nbf_aux=3720
+[2026-03-12 22:26:53]   [CHECKPOINT] 108/120 rows saved
+[2026-03-12 22:26:54]   [ 109/120] GLY_VAL_0            cc-pVDZ        FNO-CCSD     nocc=58  nvirt=237  np=445781  nbf_aux=1078
+[2026-03-12 22:26:56]   [ 110/120] GLY_VAL_0            cc-pVTZ        FNO-CCSD     nocc=58  nvirt=630  np=446756  nbf_aux=1725
+[2026-03-12 22:26:58]   [ 111/120] GLY_VAL_0            cc-pVQZ        FNO-CCSD     nocc=58  nvirt=1277  np=447492  nbf_aux=2915
+[2026-03-12 22:26:59]   [ 112/120] GLY_VAL_0            aug-cc-pVDZ    FNO-CCSD     nocc=58  nvirt=440  np=449417  nbf_aux=1471
+[2026-03-12 22:27:01]   [ 113/120] GLY_VAL_0            aug-cc-pVTZ    FNO-CCSD     nocc=58  nvirt=1023  np=449417  nbf_aux=2372
+[2026-03-12 22:27:03]   [ 114/120] GLY_VAL_0            aug-cc-pVQZ    FNO-CCSD     nocc=58  nvirt=1924  np=449417  nbf_aux=3880
+[2026-03-12 22:27:03]   [CHECKPOINT] 114/120 rows saved
+[2026-03-12 22:27:04]   [ 115/120] SER_CYS_0            cc-pVDZ        FNO-CCSD     nocc=66  nvirt=237  np=429469  nbf_aux=1126
+[2026-03-12 22:27:06]   [ 116/120] SER_CYS_0            cc-pVTZ        FNO-CCSD     nocc=66  nvirt=628  np=430785  nbf_aux=1787
+[2026-03-12 22:27:08]   [ 117/120] SER_CYS_0            cc-pVQZ        FNO-CCSD     nocc=66  nvirt=1268  np=431864  nbf_aux=2963
+[2026-03-12 22:27:09]   [ 118/120] SER_CYS_0            aug-cc-pVDZ    FNO-CCSD     nocc=66  nvirt=441  np=433949  nbf_aux=1517
+[2026-03-12 22:27:11]   [ 119/120] SER_CYS_0            aug-cc-pVTZ    FNO-CCSD     nocc=66  nvirt=1019  np=434016  nbf_aux=2427
+[2026-03-12 22:27:13]   [ 120/120] SER_CYS_0            aug-cc-pVQZ    FNO-CCSD     nocc=66  nvirt=1908  np=434052  nbf_aux=3914
+[2026-03-12 22:27:13]   [CHECKPOINT] 120/120 rows saved
+[2026-03-12 22:27:13] [DONE] Saved 120 rows -> /home/hice1/vlita3/ice_timing_vars/output/pepconf_2333/pepconf_2333_FNO-CCSD.pkl
+[2026-03-12 22:27:13] [CLEANUP] Checkpoint removed: /home/hice1/vlita3/ice_timing_vars/output/pepconf_2333/pepconf_2333_FNO-CCSD_checkpoint.pkl
+========================================
+Job finished: Thu Mar 12 10:27:13 PM EDT 2026
+Exit code   : 0
+========================================
+---------------------------------------
+Begin Slurm Epilog: Mar-12-2026 22:27:13
+Job ID:        4408213
+User ID:       vlita3
+Account:       chem
+Job name:      tv_pep2333_FNOCCSD
+Resources:     cpu=8,mem=32G,node=1
+Rsrc Used:     cput=00:26:16,vmem=0,walltime=00:03:17,mem=427308K,energy_used=0
+Partition:     coc-cpu
+QOS:           coc-ice
+Nodes:         atl1-1-02-010-8-1
+---------------------------------------

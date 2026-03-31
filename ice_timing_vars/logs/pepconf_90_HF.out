@@ -1,0 +1,214 @@
+---------------------------------------
+Begin Slurm Prolog: Mar-12-2026 22:26:57
+Job ID:    4408240
+User ID:   vlita3
+Account:   chem
+Job name:  tv_pep90_HF
+Partition: coc-cpu
+QOS:       coc-ice
+---------------------------------------
+========================================
+Job started : Thu Mar 12 10:26:57 PM EDT 2026
+Node        : atl1-1-02-012-8-2.pace.gatech.edu
+Dataset     : pepconf_90
+Method      : HF
+Threads     : 8
+========================================
+[2026-03-12 22:27:06] [START] dataset=pepconf_90  method=HF  threads=8
+[2026-03-12 22:27:06]         input pkl : /home/hice1/vlita3/ice_timing_vars/data/pepconf_90+_25.pkl
+[2026-03-12 22:27:06]         output pkl: /home/hice1/vlita3/ice_timing_vars/output/pepconf_90/pepconf_90_HF.pkl
+[2026-03-12 22:27:06]         dataframe shape: (150, 8)  |  mol column: 'qcel_dimer'
+[2026-03-12 22:27:06]         psi4 version: 1.9.1  |  threads: 8
+[2026-03-12 22:27:23]   [   1/150] GPQGIAG_0            cc-pVDZ        HF           nocc=171  nvirt=684  np=1191396  nbf_aux=4185
+[2026-03-12 22:27:40]   [   2/150] GPQGIAG_0            cc-pVTZ        HF           nocc=171  nvirt=1809  np=1192954  nbf_aux=4905
+[2026-03-12 22:27:59]   [   3/150] GPQGIAG_0            cc-pVQZ        HF           nocc=171  nvirt=3654  np=1194112  nbf_aux=7065
+[2026-03-12 22:28:16]   [   4/150] GPQGIAG_0            aug-cc-pVDZ    HF           nocc=171  nvirt=1269  np=1197118  nbf_aux=5310
+[2026-03-12 22:28:34]   [   5/150] GPQGIAG_0            aug-cc-pVTZ    HF           nocc=171  nvirt=2934  np=1197118  nbf_aux=6750
+[2026-03-12 22:28:53]   [   6/150] GPQGIAG_0            aug-cc-pVQZ    HF           nocc=171  nvirt=5499  np=1197118  nbf_aux=9810
+[2026-03-12 22:28:53]   [CHECKPOINT] 6/150 rows saved
+[2026-03-12 22:29:23]   [   7/150] HHHHHH_0             cc-pVDZ        HF           nocc=232  nvirt=899  np=1444431  nbf_aux=5561
+[2026-03-12 22:29:53]   [   8/150] HHHHHH_0             cc-pVTZ        HF           nocc=232  nvirt=2346  np=1446611  nbf_aux=6466
+[2026-03-12 22:30:25]   [   9/150] HHHHHH_0             cc-pVQZ        HF           nocc=232  nvirt=4698  np=1447973  nbf_aux=9181
+[2026-03-12 22:30:55]   [  10/150] HHHHHH_0             aug-cc-pVDZ    HF           nocc=232  nvirt=1663  np=1452265  nbf_aux=7008
+[2026-03-12 22:31:27]   [  11/150] HHHHHH_0             aug-cc-pVTZ    HF           nocc=232  nvirt=3793  np=1452265  nbf_aux=8818
+[2026-03-12 22:32:00]   [  12/150] HHHHHH_0             aug-cc-pVQZ    HF           nocc=232  nvirt=7050  np=1452265  nbf_aux=12660
+[2026-03-12 22:32:00]   [CHECKPOINT] 12/150 rows saved
+[2026-03-12 22:32:18]   [  13/150] IKVAV_0              cc-pVDZ        HF           nocc=156  nvirt=664  np=1228346  nbf_aux=3996
+[2026-03-12 22:32:37]   [  14/150] IKVAV_0              cc-pVTZ        HF           nocc=156  nvirt=1772  np=1229644  nbf_aux=4720
+[2026-03-12 22:32:56]   [  15/150] IKVAV_0              cc-pVQZ        HF           nocc=156  nvirt=3604  np=1230551  nbf_aux=6892
+[2026-03-12 22:33:14]   [  16/150] IKVAV_0              aug-cc-pVDZ    HF           nocc=156  nvirt=1232  np=1233099  nbf_aux=5104
+[2026-03-12 22:33:33]   [  17/150] IKVAV_0              aug-cc-pVTZ    HF           nocc=156  nvirt=2880  np=1233099  nbf_aux=6552
+[2026-03-12 22:33:54]   [  18/150] IKVAV_0              aug-cc-pVQZ    HF           nocc=156  nvirt=5436  np=1233099  nbf_aux=9632
+[2026-03-12 22:33:54]   [CHECKPOINT] 18/150 rows saved
+[2026-03-12 22:34:17]   [  19/150] CEWCIQ10_0           cc-pVDZ        HF           nocc=198  nvirt=798  np=1335958  nbf_aux=4884
+[2026-03-12 22:34:41]   [  20/150] CEWCIQ10_0           cc-pVTZ        HF           nocc=198  nvirt=2094  np=1337717  nbf_aux=5706
+[2026-03-12 22:35:07]   [  21/150] CEWCIQ10_0           cc-pVQZ        HF           nocc=198  nvirt=4212  np=1338975  nbf_aux=8172
+[2026-03-12 22:35:30]   [  22/150] CEWCIQ10_0           aug-cc-pVDZ    HF           nocc=198  nvirt=1476  np=1342580  nbf_aux=6180
+[2026-03-12 22:35:55]   [  23/150] CEWCIQ10_0           aug-cc-pVTZ    HF           nocc=198  nvirt=3390  np=1342580  nbf_aux=7824
+[2026-03-12 22:36:22]   [  24/150] CEWCIQ10_0           aug-cc-pVQZ    HF           nocc=198  nvirt=6330  np=1342580  nbf_aux=11316
+[2026-03-12 22:36:22]   [CHECKPOINT] 24/150 rows saved
+[2026-03-12 22:36:39]   [  25/150] CGDLLL10_0           cc-pVDZ        HF           nocc=154  nvirt=656  np=1207245  nbf_aux=3950
+[2026-03-12 22:36:56]   [  26/150] CGDLLL10_0           cc-pVTZ        HF           nocc=154  nvirt=1746  np=1208656  nbf_aux=4660
+[2026-03-12 22:37:15]   [  27/150] CGDLLL10_0           cc-pVQZ        HF           nocc=154  nvirt=3546  np=1209577  nbf_aux=6790
+[2026-03-12 22:37:32]   [  28/150] CGDLLL10_0           aug-cc-pVDZ    HF           nocc=154  nvirt=1216  np=1212236  nbf_aux=5040
+[2026-03-12 22:37:50]   [  29/150] CGDLLL10_0           aug-cc-pVTZ    HF           nocc=154  nvirt=2836  np=1212236  nbf_aux=6460
+[2026-03-12 22:38:09]   [  30/150] CGDLLL10_0           aug-cc-pVQZ    HF           nocc=154  nvirt=5346  np=1212236  nbf_aux=9480
+[2026-03-12 22:38:09]   [CHECKPOINT] 30/150 rows saved
+[2026-03-12 22:39:13]   [  31/150] DEWFEQ_0             cc-pVDZ        HF           nocc=272  nvirt=1116  np=1928824  nbf_aux=6788
+[2026-03-12 22:40:18]   [  32/150] DEWFEQ_0             cc-pVTZ        HF           nocc=272  nvirt=2952  np=1930537  nbf_aux=7968
+[2026-03-12 22:41:25]   [  33/150] DEWFEQ_0             cc-pVQZ        HF           nocc=272  nvirt=5968  np=1931834  nbf_aux=11508
+[2026-03-12 22:42:29]   [  34/150] DEWFEQ_0             aug-cc-pVDZ    HF           nocc=272  nvirt=2068  np=1935214  nbf_aux=8624
+[2026-03-12 22:43:35]   [  35/150] DEWFEQ_0             aug-cc-pVTZ    HF           nocc=272  nvirt=4788  np=1935214  nbf_aux=10984
+[2026-03-12 22:44:45]   [  36/150] DEWFEQ_0             aug-cc-pVQZ    HF           nocc=272  nvirt=8984  np=1935214  nbf_aux=16000
+[2026-03-12 22:44:45]   [CHECKPOINT] 36/150 rows saved
+[2026-03-12 22:45:08]   [  37/150] DUVGOQ10_0           cc-pVDZ        HF           nocc=213  nvirt=809  np=1346491  nbf_aux=5062
+[2026-03-12 22:45:31]   [  38/150] DUVGOQ10_0           cc-pVTZ        HF           nocc=213  nvirt=2119  np=1348805  nbf_aux=5888
+[2026-03-12 22:45:55]   [  39/150] DUVGOQ10_0           cc-pVQZ        HF           nocc=213  nvirt=4255  np=1350717  nbf_aux=8366
+[2026-03-12 22:46:19]   [  40/150] DUVGOQ10_0           aug-cc-pVDZ    HF           nocc=213  nvirt=1497  np=1354237  nbf_aux=6372
+[2026-03-12 22:46:43]   [  41/150] DUVGOQ10_0           aug-cc-pVTZ    HF           nocc=213  nvirt=3429  np=1354266  nbf_aux=8024
+[2026-03-12 22:47:08]   [  42/150] DUVGOQ10_0           aug-cc-pVQZ    HF           nocc=213  nvirt=6391  np=1354266  nbf_aux=11532
+[2026-03-12 22:47:08]   [CHECKPOINT] 42/150 rows saved
+[2026-03-12 22:47:31]   [  43/150] KARPIE_0             cc-pVDZ        HF           nocc=194  nvirt=784  np=1345727  nbf_aux=4790
+[2026-03-12 22:47:55]   [  44/150] KARPIE_0             cc-pVTZ        HF           nocc=194  nvirt=2066  np=1347531  nbf_aux=5608
+[2026-03-12 22:48:19]   [  45/150] KARPIE_0             cc-pVQZ        HF           nocc=194  nvirt=4166  np=1348670  nbf_aux=8062
+[2026-03-12 22:48:43]   [  46/150] KARPIE_0             aug-cc-pVDZ    HF           nocc=194  nvirt=1452  np=1352044  nbf_aux=6072
+[2026-03-12 22:49:07]   [  47/150] KARPIE_0             aug-cc-pVTZ    HF           nocc=194  nvirt=3348  np=1352044  nbf_aux=7708
+[2026-03-12 22:49:33]   [  48/150] KARPIE_0             aug-cc-pVQZ    HF           nocc=194  nvirt=6266  np=1352044  nbf_aux=11184
+[2026-03-12 22:49:33]   [CHECKPOINT] 48/150 rows saved
+[2026-03-12 22:50:05]   [  49/150] ZOHMIS_0             cc-pVDZ        HF           nocc=207  nvirt=868  np=1525453  nbf_aux=5253
+[2026-03-12 22:50:38]   [  50/150] ZOHMIS_0             cc-pVTZ        HF           nocc=207  nvirt=2297  np=1527040  nbf_aux=6175
+[2026-03-12 22:51:13]   [  51/150] ZOHMIS_0             cc-pVQZ        HF           nocc=207  nvirt=4648  np=1528132  nbf_aux=8941
+[2026-03-12 22:51:46]   [  52/150] ZOHMIS_0             aug-cc-pVDZ    HF           nocc=207  nvirt=1607  np=1531167  nbf_aux=6682
+[2026-03-12 22:52:20]   [  53/150] ZOHMIS_0             aug-cc-pVTZ    HF           nocc=207  nvirt=3726  np=1531167  nbf_aux=8526
+[2026-03-12 22:52:56]   [  54/150] ZOHMIS_0             aug-cc-pVQZ    HF           nocc=207  nvirt=6999  np=1531167  nbf_aux=12446
+[2026-03-12 22:52:56]   [CHECKPOINT] 54/150 rows saved
+[2026-03-12 22:53:24]   [  55/150] 1bmg_0               cc-pVDZ        HF           nocc=224  nvirt=837  np=1416663  nbf_aux=5247
+[2026-03-12 22:53:52]   [  56/150] 1bmg_0               cc-pVTZ        HF           nocc=224  nvirt=2208  np=1418825  nbf_aux=6117
+[2026-03-12 22:54:21]   [  57/150] 1bmg_0               cc-pVQZ        HF           nocc=224  nvirt=4449  np=1420474  nbf_aux=8727
+[2026-03-12 22:54:48]   [  58/150] 1bmg_0               aug-cc-pVDZ    HF           nocc=224  nvirt=1554  np=1423510  nbf_aux=6618
+[2026-03-12 22:55:17]   [  59/150] 1bmg_0               aug-cc-pVTZ    HF           nocc=224  nvirt=3579  np=1423564  nbf_aux=8358
+[2026-03-12 22:55:47]   [  60/150] 1bmg_0               aug-cc-pVQZ    HF           nocc=224  nvirt=6690  np=1423600  nbf_aux=12054
+[2026-03-12 22:55:47]   [CHECKPOINT] 60/150 rows saved
+[2026-03-12 22:56:08]   [  61/150] 1bvo_0               cc-pVDZ        HF           nocc=190  nvirt=726  np=1280385  nbf_aux=4524
+[2026-03-12 22:56:29]   [  62/150] 1bvo_0               cc-pVTZ        HF           nocc=190  nvirt=1928  np=1282290  nbf_aux=5297
+[2026-03-12 22:56:52]   [  63/150] 1bvo_0               cc-pVQZ        HF           nocc=190  nvirt=3903  np=1283812  nbf_aux=7616
+[2026-03-12 22:57:13]   [  64/150] 1bvo_0               aug-cc-pVDZ    HF           nocc=190  nvirt=1349  np=1286672  nbf_aux=5726
+[2026-03-12 22:57:35]   [  65/150] 1bvo_0               aug-cc-pVTZ    HF           nocc=190  nvirt=3130  np=1286743  nbf_aux=7272
+[2026-03-12 22:57:58]   [  66/150] 1bvo_0               aug-cc-pVQZ    HF           nocc=190  nvirt=5878  np=1286790  nbf_aux=10558
+[2026-03-12 22:57:58]   [CHECKPOINT] 66/150 rows saved
+[2026-03-12 22:58:20]   [  67/150] 1c8e_0               cc-pVDZ        HF           nocc=202  nvirt=760  np=1306276  nbf_aux=4758
+[2026-03-12 22:58:42]   [  68/150] 1c8e_0               cc-pVTZ        HF           nocc=202  nvirt=2008  np=1308259  nbf_aux=5553
+[2026-03-12 22:59:05]   [  69/150] 1c8e_0               cc-pVQZ        HF           nocc=202  nvirt=4051  np=1309973  nbf_aux=7938
+[2026-03-12 22:59:27]   [  70/150] 1c8e_0               aug-cc-pVDZ    HF           nocc=202  nvirt=1411  np=1312859  nbf_aux=6006
+[2026-03-12 22:59:50]   [  71/150] 1c8e_0               aug-cc-pVTZ    HF           nocc=202  nvirt=3256  np=1312926  nbf_aux=7596
+[2026-03-12 23:00:14]   [  72/150] 1c8e_0               aug-cc-pVQZ    HF           nocc=202  nvirt=6094  np=1312967  nbf_aux=10974
+[2026-03-12 23:00:14]   [CHECKPOINT] 72/150 rows saved
+[2026-03-12 23:00:39]   [  73/150] 1f02_0               cc-pVDZ        HF           nocc=202  nvirt=776  np=1371977  nbf_aux=4826
+[2026-03-12 23:01:05]   [  74/150] 1f02_0               cc-pVTZ        HF           nocc=202  nvirt=2062  np=1373859  nbf_aux=5654
+[2026-03-12 23:01:32]   [  75/150] 1f02_0               cc-pVQZ        HF           nocc=202  nvirt=4176  np=1375401  nbf_aux=8138
+[2026-03-12 23:01:57]   [  76/150] 1f02_0               aug-cc-pVDZ    HF           nocc=202  nvirt=1442  np=1378170  nbf_aux=6112
+[2026-03-12 23:02:23]   [  77/150] 1f02_0               aug-cc-pVTZ    HF           nocc=202  nvirt=3348  np=1378251  nbf_aux=7768
+[2026-03-12 23:02:51]   [  78/150] 1f02_0               aug-cc-pVQZ    HF           nocc=202  nvirt=6290  np=1378302  nbf_aux=11288
+[2026-03-12 23:02:51]   [CHECKPOINT] 78/150 rows saved
+[2026-03-12 23:03:13]   [  79/150] 1ijs_0               cc-pVDZ        HF           nocc=202  nvirt=760  np=1300758  nbf_aux=4758
+[2026-03-12 23:03:35]   [  80/150] 1ijs_0               cc-pVTZ        HF           nocc=202  nvirt=2008  np=1302762  nbf_aux=5553
+[2026-03-12 23:03:58]   [  81/150] 1ijs_0               cc-pVQZ        HF           nocc=202  nvirt=4051  np=1304339  nbf_aux=7938
+[2026-03-12 23:04:20]   [  82/150] 1ijs_0               aug-cc-pVDZ    HF           nocc=202  nvirt=1411  np=1307210  nbf_aux=6006
+[2026-03-12 23:04:43]   [  83/150] 1ijs_0               aug-cc-pVTZ    HF           nocc=202  nvirt=3256  np=1307278  nbf_aux=7596
+[2026-03-12 23:05:08]   [  84/150] 1ijs_0               aug-cc-pVQZ    HF           nocc=202  nvirt=6094  np=1307303  nbf_aux=10974
+[2026-03-12 23:05:08]   [CHECKPOINT] 84/150 rows saved
+[2026-03-12 23:05:37]   [  85/150] 1ou5_0               cc-pVDZ        HF           nocc=219  nvirt=843  np=1451117  nbf_aux=5246
+[2026-03-12 23:06:06]   [  86/150] 1ou5_0               cc-pVTZ        HF           nocc=219  nvirt=2225  np=1453265  nbf_aux=6128
+[2026-03-12 23:06:37]   [  87/150] 1ou5_0               cc-pVQZ        HF           nocc=219  nvirt=4489  np=1455003  nbf_aux=8774
+[2026-03-12 23:07:07]   [  88/150] 1ou5_0               aug-cc-pVDZ    HF           nocc=219  nvirt=1563  np=1458177  nbf_aux=6628
+[2026-03-12 23:07:37]   [  89/150] 1ou5_0               aug-cc-pVTZ    HF           nocc=219  nvirt=3607  np=1458224  nbf_aux=8392
+[2026-03-12 23:08:10]   [  90/150] 1ou5_0               aug-cc-pVQZ    HF           nocc=219  nvirt=6753  np=1458247  nbf_aux=12140
+[2026-03-12 23:08:10]   [CHECKPOINT] 90/150 rows saved
+[2026-03-12 23:08:37]   [  91/150] 2ov8_0               cc-pVDZ        HF           nocc=220  nvirt=813  np=1406920  nbf_aux=5125
+[2026-03-12 23:09:04]   [  92/150] 2ov8_0               cc-pVTZ        HF           nocc=220  nvirt=2154  np=1408961  nbf_aux=5982
+[2026-03-12 23:09:33]   [  93/150] 2ov8_0               cc-pVQZ        HF           nocc=220  nvirt=4352  np=1410599  nbf_aux=8553
+[2026-03-12 23:10:00]   [  94/150] 2ov8_0               aug-cc-pVDZ    HF           nocc=220  nvirt=1511  np=1413660  nbf_aux=6466
+[2026-03-12 23:10:29]   [  95/150] 2ov8_0               aug-cc-pVTZ    HF           nocc=220  nvirt=3495  np=1413738  nbf_aux=8180
+[2026-03-12 23:10:59]   [  96/150] 2ov8_0               aug-cc-pVQZ    HF           nocc=220  nvirt=6550  np=1413775  nbf_aux=11822
+[2026-03-12 23:10:59]   [CHECKPOINT] 96/150 rows saved
+[2026-03-12 23:11:21]   [  97/150] 2p62_0               cc-pVDZ        HF           nocc=206  nvirt=770  np=1313408  nbf_aux=4828
+[2026-03-12 23:11:43]   [  98/150] 2p62_0               cc-pVTZ        HF           nocc=206  nvirt=2034  np=1315584  nbf_aux=5632
+[2026-03-12 23:12:07]   [  99/150] 2p62_0               cc-pVQZ        HF           nocc=206  nvirt=4102  np=1317193  nbf_aux=8044
+[2026-03-12 23:12:30]   [ 100/150] 2p62_0               aug-cc-pVDZ    HF           nocc=206  nvirt=1430  np=1320378  nbf_aux=6092
+[2026-03-12 23:12:53]   [ 101/150] 2p62_0               aug-cc-pVTZ    HF           nocc=206  nvirt=3298  np=1320419  nbf_aux=7700
+[2026-03-12 23:13:18]   [ 102/150] 2p62_0               aug-cc-pVQZ    HF           nocc=206  nvirt=6170  np=1320436  nbf_aux=11116
+[2026-03-12 23:13:18]   [CHECKPOINT] 102/150 rows saved
+[2026-03-12 23:13:48]   [ 103/150] 3ikk_0               cc-pVDZ        HF           nocc=225  nvirt=865  np=1467187  nbf_aux=5386
+[2026-03-12 23:14:19]   [ 104/150] 3ikk_0               cc-pVTZ        HF           nocc=225  nvirt=2279  np=1469366  nbf_aux=6286
+[2026-03-12 23:14:52]   [ 105/150] 3ikk_0               cc-pVQZ        HF           nocc=225  nvirt=4593  np=1471088  nbf_aux=8986
+[2026-03-12 23:15:23]   [ 106/150] 3ikk_0               aug-cc-pVDZ    HF           nocc=225  nvirt=1603  np=1474266  nbf_aux=6800
+[2026-03-12 23:15:55]   [ 107/150] 3ikk_0               aug-cc-pVTZ    HF           nocc=225  nvirt=3693  np=1474320  nbf_aux=8600
+[2026-03-12 23:16:28]   [ 108/150] 3ikk_0               aug-cc-pVQZ    HF           nocc=225  nvirt=6907  np=1474331  nbf_aux=12424
+[2026-03-12 23:16:28]   [CHECKPOINT] 108/150 rows saved
+[2026-03-12 23:16:54]   [ 109/150] 4az8_0               cc-pVDZ        HF           nocc=204  nvirt=793  np=1401900  nbf_aux=4919
+[2026-03-12 23:17:21]   [ 110/150] 4az8_0               cc-pVTZ        HF           nocc=204  nvirt=2104  np=1403851  nbf_aux=5763
+[2026-03-12 23:17:48]   [ 111/150] 4az8_0               cc-pVQZ        HF           nocc=204  nvirt=4259  np=1405452  nbf_aux=8295
+[2026-03-12 23:18:14]   [ 112/150] 4az8_0               aug-cc-pVDZ    HF           nocc=204  nvirt=1472  np=1408270  nbf_aux=6230
+[2026-03-12 23:18:41]   [ 113/150] 4az8_0               aug-cc-pVTZ    HF           nocc=204  nvirt=3415  np=1408325  nbf_aux=7918
+[2026-03-12 23:19:10]   [ 114/150] 4az8_0               aug-cc-pVQZ    HF           nocc=204  nvirt=6414  np=1408350  nbf_aux=11506
+[2026-03-12 23:19:10]   [CHECKPOINT] 114/150 rows saved
+[2026-03-12 23:19:38]   [ 115/150] 4fi9_0               cc-pVDZ        HF           nocc=222  nvirt=844  np=1428118  nbf_aux=5270
+[2026-03-12 23:20:07]   [ 116/150] 4fi9_0               cc-pVTZ        HF           nocc=222  nvirt=2224  np=1430318  nbf_aux=6147
+[2026-03-12 23:20:37]   [ 117/150] 4fi9_0               cc-pVQZ        HF           nocc=222  nvirt=4481  np=1432034  nbf_aux=8778
+[2026-03-12 23:21:05]   [ 118/150] 4fi9_0               aug-cc-pVDZ    HF           nocc=222  nvirt=1565  np=1435255  nbf_aux=6650
+[2026-03-12 23:21:35]   [ 119/150] 4fi9_0               aug-cc-pVTZ    HF           nocc=222  nvirt=3604  np=1435309  nbf_aux=8404
+[2026-03-12 23:22:07]   [ 120/150] 4fi9_0               aug-cc-pVQZ    HF           nocc=222  nvirt=6738  np=1435323  nbf_aux=12130
+[2026-03-12 23:22:07]   [CHECKPOINT] 120/150 rows saved
+[2026-03-12 23:22:24]   [ 121/150] 4nc2_0               cc-pVDZ        HF           nocc=189  nvirt=701  np=1193828  nbf_aux=4410
+[2026-03-12 23:22:41]   [ 122/150] 4nc2_0               cc-pVTZ        HF           nocc=189  nvirt=1847  np=1196076  nbf_aux=5136
+[2026-03-12 23:23:00]   [ 123/150] 4nc2_0               cc-pVQZ        HF           nocc=189  nvirt=3719  np=1197673  nbf_aux=7314
+[2026-03-12 23:23:17]   [ 124/150] 4nc2_0               aug-cc-pVDZ    HF           nocc=189  nvirt=1301  np=1200897  nbf_aux=5556
+[2026-03-12 23:23:35]   [ 125/150] 4nc2_0               aug-cc-pVTZ    HF           nocc=189  nvirt=2993  np=1200960  nbf_aux=7008
+[2026-03-12 23:23:55]   [ 126/150] 4nc2_0               aug-cc-pVQZ    HF           nocc=189  nvirt=5591  np=1200984  nbf_aux=10092
+[2026-03-12 23:23:55]   [CHECKPOINT] 126/150 rows saved
+[2026-03-12 23:24:24]   [ 127/150] 4q5y_0               cc-pVDZ        HF           nocc=221  nvirt=841  np=1439705  nbf_aux=5246
+[2026-03-12 23:24:54]   [ 128/150] 4q5y_0               cc-pVTZ        HF           nocc=221  nvirt=2223  np=1441908  nbf_aux=6128
+[2026-03-12 23:25:24]   [ 129/150] 4q5y_0               cc-pVQZ        HF           nocc=221  nvirt=4487  np=1443569  nbf_aux=8774
+[2026-03-12 23:25:54]   [ 130/150] 4q5y_0               aug-cc-pVDZ    HF           nocc=221  nvirt=1561  np=1446784  nbf_aux=6628
+[2026-03-12 23:26:25]   [ 131/150] 4q5y_0               aug-cc-pVTZ    HF           nocc=221  nvirt=3605  np=1446845  nbf_aux=8392
+[2026-03-12 23:26:57]   [ 132/150] 4q5y_0               aug-cc-pVQZ    HF           nocc=221  nvirt=6751  np=1446882  nbf_aux=12140
+[2026-03-12 23:26:57]   [CHECKPOINT] 132/150 rows saved
+[2026-03-12 23:27:27]   [ 133/150] 5cyu_0               cc-pVDZ        HF           nocc=226  nvirt=864  np=1463433  nbf_aux=5386
+[2026-03-12 23:27:58]   [ 134/150] 5cyu_0               cc-pVTZ        HF           nocc=226  nvirt=2278  np=1465600  nbf_aux=6286
+[2026-03-12 23:28:31]   [ 135/150] 5cyu_0               cc-pVQZ        HF           nocc=226  nvirt=4592  np=1467272  nbf_aux=8986
+[2026-03-12 23:29:02]   [ 136/150] 5cyu_0               aug-cc-pVDZ    HF           nocc=226  nvirt=1602  np=1470438  nbf_aux=6800
+[2026-03-12 23:29:34]   [ 137/150] 5cyu_0               aug-cc-pVTZ    HF           nocc=226  nvirt=3692  np=1470496  nbf_aux=8600
+[2026-03-12 23:30:07]   [ 138/150] 5cyu_0               aug-cc-pVQZ    HF           nocc=226  nvirt=6906  np=1470505  nbf_aux=12424
+[2026-03-12 23:30:07]   [CHECKPOINT] 138/150 rows saved
+[2026-03-12 23:30:33]   [ 139/150] 5j6e_0               cc-pVDZ        HF           nocc=199  nvirt=779  np=1370009  nbf_aux=4826
+[2026-03-12 23:30:58]   [ 140/150] 5j6e_0               cc-pVTZ        HF           nocc=199  nvirt=2065  np=1371869  nbf_aux=5654
+[2026-03-12 23:31:25]   [ 141/150] 5j6e_0               cc-pVQZ        HF           nocc=199  nvirt=4179  np=1373380  nbf_aux=8138
+[2026-03-12 23:31:51]   [ 142/150] 5j6e_0               aug-cc-pVDZ    HF           nocc=199  nvirt=1445  np=1376188  nbf_aux=6112
+[2026-03-12 23:32:17]   [ 143/150] 5j6e_0               aug-cc-pVTZ    HF           nocc=199  nvirt=3351  np=1376256  nbf_aux=7768
+[2026-03-12 23:32:45]   [ 144/150] 5j6e_0               aug-cc-pVQZ    HF           nocc=199  nvirt=6293  np=1376265  nbf_aux=11288
+[2026-03-12 23:32:45]   [CHECKPOINT] 144/150 rows saved
+[2026-03-12 23:33:07]   [ 145/150] 5sv7_0               cc-pVDZ        HF           nocc=197  nvirt=747  np=1306181  nbf_aux=4664
+[2026-03-12 23:33:29]   [ 146/150] 5sv7_0               cc-pVTZ        HF           nocc=197  nvirt=1981  np=1308059  nbf_aux=5455
+[2026-03-12 23:33:53]   [ 147/150] 5sv7_0               cc-pVQZ        HF           nocc=197  nvirt=4006  np=1309591  nbf_aux=7828
+[2026-03-12 23:34:15]   [ 148/150] 5sv7_0               aug-cc-pVDZ    HF           nocc=197  nvirt=1388  np=1312332  nbf_aux=5898
+[2026-03-12 23:34:38]   [ 149/150] 5sv7_0               aug-cc-pVTZ    HF           nocc=197  nvirt=3215  np=1312396  nbf_aux=7480
+[2026-03-12 23:35:02]   [ 150/150] 5sv7_0               aug-cc-pVQZ    HF           nocc=197  nvirt=6031  np=1312435  nbf_aux=10842
+[2026-03-12 23:35:02]   [CHECKPOINT] 150/150 rows saved
+[2026-03-12 23:35:02] [DONE] Saved 150 rows -> /home/hice1/vlita3/ice_timing_vars/output/pepconf_90/pepconf_90_HF.pkl
+[2026-03-12 23:35:02] [CLEANUP] Checkpoint removed: /home/hice1/vlita3/ice_timing_vars/output/pepconf_90/pepconf_90_HF_checkpoint.pkl
+========================================
+Job finished: Thu Mar 12 11:35:03 PM EDT 2026
+Exit code   : 0
+========================================
+---------------------------------------
+Begin Slurm Epilog: Mar-12-2026 23:35:03
+Job ID:        4408240
+User ID:       vlita3
+Account:       chem
+Job name:      tv_pep90_HF
+Resources:     cpu=8,mem=32G,node=1
+Rsrc Used:     cput=09:04:48,vmem=0,walltime=01:08:06,mem=2175704K,energy_used=0
+Partition:     coc-cpu
+QOS:           coc-ice
+Nodes:         atl1-1-02-012-8-2
+---------------------------------------

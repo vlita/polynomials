@@ -1,0 +1,180 @@
+
+Host: atl1-1-02-010-8-1.pace.gatech.edu
+
+Timers On : Thu Mar 12 22:24:06 2026
+Timers Off: Thu Mar 12 22:27:13 2026
+
+Wall Time:      186.63 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+build grid                          :   1030.217u      5.583s     78.065w    120 calls
+post-process grid                   :    253.983u      6.950s     45.836w    120 calls
+
+--------------------------------------------------------------------------------------
+build grid                          :   1030.217u      5.583s     78.065w    120 calls
+post-process grid                   :    253.983u      6.950s     45.836w    120 calls
+
+**************************************************************************************
+
+Host: atl1-1-02-003-20-1.pace.gatech.edu
+
+Timers On : Thu Mar 12 22:26:01 2026
+Timers Off: Thu Mar 12 23:33:49 2026
+
+Wall Time:     4067.53 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+build grid                          :  40105.783u     17.083s   3166.436w    150 calls
+post-process grid                   :    965.333u      4.183s    535.851w    150 calls
+
+--------------------------------------------------------------------------------------
+build grid                          :  40105.783u     17.083s   3166.436w    150 calls
+post-process grid                   :    965.333u      4.183s    535.851w    150 calls
+
+**************************************************************************************
+
+Host: atl1-1-02-010-1-1.pace.gatech.edu
+
+Timers On : Thu Mar 12 22:26:10 2026
+Timers Off: Thu Mar 12 23:34:03 2026
+
+Wall Time:     4073.30 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+build grid                          :  40103.117u     17.133s   3167.817w    150 calls
+post-process grid                   :    964.783u      3.733s    535.397w    150 calls
+
+--------------------------------------------------------------------------------------
+build grid                          :  40103.117u     17.133s   3167.817w    150 calls
+post-process grid                   :    964.783u      3.733s    535.397w    150 calls
+
+**************************************************************************************
+
+Host: atl1-1-02-010-1-2.pace.gatech.edu
+
+Timers On : Thu Mar 12 22:26:20 2026
+Timers Off: Thu Mar 12 23:34:17 2026
+
+Wall Time:     4077.09 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+build grid                          :  40102.933u     16.600s   3170.682w    150 calls
+post-process grid                   :    963.000u      3.483s    535.898w    150 calls
+
+--------------------------------------------------------------------------------------
+build grid                          :  40102.933u     16.600s   3170.682w    150 calls
+post-process grid                   :    963.000u      3.483s    535.898w    150 calls
+
+**************************************************************************************
+
+Host: atl1-1-02-010-2-1.pace.gatech.edu
+
+Timers On : Thu Mar 12 22:26:39 2026
+Timers Off: Thu Mar 12 23:34:35 2026
+
+Wall Time:     4076.08 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+build grid                          :  40090.217u     16.933s   3168.194w    150 calls
+post-process grid                   :    961.767u      4.250s    535.759w    150 calls
+
+--------------------------------------------------------------------------------------
+build grid                          :  40090.217u     16.933s   3168.194w    150 calls
+post-process grid                   :    961.767u      4.250s    535.759w    150 calls
+
+**************************************************************************************
+
+Host: atl1-1-02-010-2-2.pace.gatech.edu
+
+Timers On : Thu Mar 12 22:26:42 2026
+Timers Off: Thu Mar 12 23:34:35 2026
+
+Wall Time:     4073.72 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+build grid                          :  40114.083u     16.767s   3168.003w    150 calls
+post-process grid                   :    968.683u      5.983s    536.840w    150 calls
+
+--------------------------------------------------------------------------------------
+build grid                          :  40114.083u     16.767s   3168.003w    150 calls
+post-process grid                   :    968.683u      5.983s    536.840w    150 calls
+
+**************************************************************************************
+
+Host: atl1-1-02-012-8-1.pace.gatech.edu
+
+Timers On : Thu Mar 12 22:26:56 2026
+Timers Off: Thu Mar 12 23:34:57 2026
+
+Wall Time:     4081.15 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+build grid                          :  40112.933u     17.217s   3173.984w    150 calls
+post-process grid                   :    959.117u      3.183s    536.938w    150 calls
+
+--------------------------------------------------------------------------------------
+build grid                          :  40112.933u     17.217s   3173.984w    150 calls
+post-process grid                   :    959.117u      3.183s    536.938w    150 calls
+
+**************************************************************************************
+
+Host: atl1-1-02-012-7-2.pace.gatech.edu
+
+Timers On : Thu Mar 12 22:26:49 2026
+Timers Off: Thu Mar 12 23:34:58 2026
+
+Wall Time:     4089.72 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+build grid                          :  40132.467u     18.733s   3173.017w    150 calls
+post-process grid                   :    970.200u      5.283s    541.562w    150 calls
+
+--------------------------------------------------------------------------------------
+build grid                          :  40132.467u     18.733s   3173.017w    150 calls
+post-process grid                   :    970.200u      5.283s    541.562w    150 calls
+
+**************************************************************************************
+
+Host: atl1-1-02-012-8-2.pace.gatech.edu
+
+Timers On : Thu Mar 12 22:27:05 2026
+Timers Off: Thu Mar 12 23:35:02 2026
+
+Wall Time:     4077.59 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+build grid                          :  40103.433u     16.850s   3167.154w    150 calls
+post-process grid                   :    965.183u      3.633s    535.969w    150 calls
+
+--------------------------------------------------------------------------------------
+build grid                          :  40103.433u     16.850s   3167.154w    150 calls
+post-process grid                   :    965.183u      3.633s    535.969w    150 calls
+
+**************************************************************************************
+
+Host: atl1-1-01-005-1-1.pace.gatech.edu
+
+Timers On : Fri Mar 13 11:06:44 2026
+Timers Off: Fri Mar 13 15:14:18 2026
+
+Wall Time:    14854.66 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+build grid                          : 163249.350u      5.283s  13902.761w     18 calls
+post-process grid                   :   1094.100u      2.117s    654.120w     18 calls
+
+--------------------------------------------------------------------------------------
+build grid                          : 163249.350u      5.283s  13902.761w     18 calls
+post-process grid                   :   1094.100u      2.117s    654.120w     18 calls
+
+**************************************************************************************

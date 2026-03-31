@@ -1,0 +1,155 @@
+---------------------------------------
+Begin Slurm Prolog: Mar-12-2026 22:28:29
+Job ID:    4408248
+User ID:   vlita3
+Account:   chem
+Job name:  tv_3acx_PBED3
+Partition: coc-cpu
+QOS:       coc-ice
+---------------------------------------
+========================================
+Job started : Thu Mar 12 10:28:29 PM EDT 2026
+Node        : atl1-1-02-012-9-2.pace.gatech.edu
+Dataset     : 3acx
+Method      : PBE-D3
+Threads     : 8
+========================================
+[2026-03-12 22:28:37] [START] dataset=3acx  method=PBE-D3  threads=8
+[2026-03-12 22:28:37]         input pkl : /home/hice1/vlita3/ice_timing_vars/data/3acx_103+_20_in.pkl
+[2026-03-12 22:28:37]         output pkl: /home/hice1/vlita3/ice_timing_vars/output/3acx/3acx_PBE-D3.pkl
+[2026-03-12 22:28:37]         dataframe shape: (120, 7)  |  mol column: 'qcel_dimer'
+[2026-03-12 22:28:37]         psi4 version: 1.9.1  |  threads: 8
+[2026-03-12 22:29:01]   [   1/120] 3ACX_103             cc-pVDZ        PBE-D3       nocc=184  nvirt=772  np=1404184  nbf_aux=4672
+[2026-03-12 22:29:27]   [   2/120] 3ACX_103             cc-pVTZ        PBE-D3       nocc=184  nvirt=2042  np=1405810  nbf_aux=5491
+[2026-03-12 22:29:53]   [   3/120] 3ACX_103             cc-pVQZ        PBE-D3       nocc=184  nvirt=4131  np=1407080  nbf_aux=7948
+[2026-03-12 22:30:17]   [   4/120] 3ACX_103             aug-cc-pVDZ    PBE-D3       nocc=184  nvirt=1429  np=1410288  nbf_aux=5942
+[2026-03-12 22:30:43]   [   5/120] 3ACX_103             aug-cc-pVTZ    PBE-D3       nocc=184  nvirt=3312  np=1410288  nbf_aux=7580
+[2026-03-12 22:31:10]   [   6/120] 3ACX_103             aug-cc-pVQZ    PBE-D3       nocc=184  nvirt=6220  np=1410288  nbf_aux=11062
+[2026-03-12 22:31:10]   [CHECKPOINT] 6/120 rows saved
+[2026-03-12 22:31:49]   [   7/120] 3ACX_123             cc-pVDZ        PBE-D3       nocc=222  nvirt=924  np=1654407  nbf_aux=5602
+[2026-03-12 22:32:28]   [   8/120] 3ACX_123             cc-pVTZ        PBE-D3       nocc=222  nvirt=2444  np=1656106  nbf_aux=6581
+[2026-03-12 22:33:09]   [   9/120] 3ACX_123             cc-pVQZ        PBE-D3       nocc=222  nvirt=4943  np=1657515  nbf_aux=9518
+[2026-03-12 22:33:48]   [  10/120] 3ACX_123             aug-cc-pVDZ    PBE-D3       nocc=222  nvirt=1711  np=1660972  nbf_aux=7122
+[2026-03-12 22:34:28]   [  11/120] 3ACX_123             aug-cc-pVTZ    PBE-D3       nocc=222  nvirt=3964  np=1660972  nbf_aux=9080
+[2026-03-12 22:35:10]   [  12/120] 3ACX_123             aug-cc-pVQZ    PBE-D3       nocc=222  nvirt=7442  np=1660972  nbf_aux=13242
+[2026-03-12 22:35:10]   [CHECKPOINT] 12/120 rows saved
+[2026-03-12 22:36:05]   [  13/120] 3ACX_140             cc-pVDZ        PBE-D3       nocc=256  nvirt=1056  np=1862237  nbf_aux=6416
+[2026-03-12 22:37:01]   [  14/120] 3ACX_140             cc-pVTZ        PBE-D3       nocc=256  nvirt=2792  np=1864009  nbf_aux=7532
+[2026-03-12 22:37:58]   [  15/120] 3ACX_140             cc-pVQZ        PBE-D3       nocc=256  nvirt=5644  np=1865325  nbf_aux=10880
+[2026-03-12 22:38:53]   [  16/120] 3ACX_140             aug-cc-pVDZ    PBE-D3       nocc=256  nvirt=1956  np=1868789  nbf_aux=8152
+[2026-03-12 22:39:50]   [  17/120] 3ACX_140             aug-cc-pVTZ    PBE-D3       nocc=256  nvirt=4528  np=1868789  nbf_aux=10384
+[2026-03-12 22:40:49]   [  18/120] 3ACX_140             aug-cc-pVQZ    PBE-D3       nocc=256  nvirt=8496  np=1868789  nbf_aux=15128
+[2026-03-12 22:40:49]   [CHECKPOINT] 18/120 rows saved
+[2026-03-12 22:42:04]   [  19/120] 3ACX_157             cc-pVDZ        PBE-D3       nocc=290  nvirt=1188  np=2073899  nbf_aux=7230
+[2026-03-12 22:43:20]   [  20/120] 3ACX_157             cc-pVTZ        PBE-D3       nocc=290  nvirt=3140  np=2075664  nbf_aux=8483
+[2026-03-12 22:44:39]   [  21/120] 3ACX_157             cc-pVQZ        PBE-D3       nocc=290  nvirt=6345  np=2077021  nbf_aux=12242
+[2026-03-12 22:45:54]   [  22/120] 3ACX_157             aug-cc-pVDZ    PBE-D3       nocc=290  nvirt=2201  np=2080576  nbf_aux=9182
+[2026-03-12 22:47:12]   [  23/120] 3ACX_157             aug-cc-pVTZ    PBE-D3       nocc=290  nvirt=5092  np=2080576  nbf_aux=11688
+[2026-03-12 22:48:33]   [  24/120] 3ACX_157             aug-cc-pVQZ    PBE-D3       nocc=290  nvirt=9550  np=2080576  nbf_aux=17014
+[2026-03-12 22:48:33]   [CHECKPOINT] 24/120 rows saved
+[2026-03-12 22:50:19]   [  25/120] 3ACX_177             cc-pVDZ        PBE-D3       nocc=328  nvirt=1340  np=2324537  nbf_aux=8160
+[2026-03-12 22:52:08]   [  26/120] 3ACX_177             cc-pVTZ        PBE-D3       nocc=328  nvirt=3542  np=2326416  nbf_aux=9573
+[2026-03-12 22:53:59]   [  27/120] 3ACX_177             cc-pVQZ        PBE-D3       nocc=328  nvirt=7157  np=2327915  nbf_aux=13812
+[2026-03-12 22:55:47]   [  28/120] 3ACX_177             aug-cc-pVDZ    PBE-D3       nocc=328  nvirt=2483  np=2331706  nbf_aux=10362
+[2026-03-12 22:57:37]   [  29/120] 3ACX_177             aug-cc-pVTZ    PBE-D3       nocc=328  nvirt=5744  np=2331706  nbf_aux=13188
+[2026-03-12 22:59:31]   [  30/120] 3ACX_177             aug-cc-pVQZ    PBE-D3       nocc=328  nvirt=10772  np=2331706  nbf_aux=19194
+[2026-03-12 22:59:31]   [CHECKPOINT] 30/120 rows saved
+[2026-03-12 23:01:54]   [  31/120] 3ACX_197             cc-pVDZ        PBE-D3       nocc=366  nvirt=1492  np=2571698  nbf_aux=9090
+[2026-03-12 23:04:18]   [  32/120] 3ACX_197             cc-pVTZ        PBE-D3       nocc=366  nvirt=3944  np=2573685  nbf_aux=10663
+[2026-03-12 23:06:45]   [  33/120] 3ACX_197             cc-pVQZ        PBE-D3       nocc=366  nvirt=7969  np=2575204  nbf_aux=15382
+[2026-03-12 23:09:08]   [  34/120] 3ACX_197             aug-cc-pVDZ    PBE-D3       nocc=366  nvirt=2765  np=2579104  nbf_aux=11542
+[2026-03-12 23:11:35]   [  35/120] 3ACX_197             aug-cc-pVTZ    PBE-D3       nocc=366  nvirt=6396  np=2579104  nbf_aux=14688
+[2026-03-12 23:14:06]   [  36/120] 3ACX_197             aug-cc-pVQZ    PBE-D3       nocc=366  nvirt=11994  np=2579104  nbf_aux=21374
+[2026-03-12 23:14:06]   [CHECKPOINT] 36/120 rows saved
+[2026-03-12 23:17:06]   [  37/120] 3ACX_214             cc-pVDZ        PBE-D3       nocc=400  nvirt=1624  np=2780484  nbf_aux=9904
+[2026-03-12 23:20:07]   [  38/120] 3ACX_214             cc-pVTZ        PBE-D3       nocc=400  nvirt=4292  np=2782537  nbf_aux=11614
+[2026-03-12 23:23:12]   [  39/120] 3ACX_214             cc-pVQZ        PBE-D3       nocc=400  nvirt=8670  np=2784080  nbf_aux=16744
+[2026-03-12 23:26:12]   [  40/120] 3ACX_214             aug-cc-pVDZ    PBE-D3       nocc=400  nvirt=3010  np=2788093  nbf_aux=12572
+[2026-03-12 23:29:16]   [  41/120] 3ACX_214             aug-cc-pVTZ    PBE-D3       nocc=400  nvirt=6960  np=2788093  nbf_aux=15992
+[2026-03-12 23:32:26]   [  42/120] 3ACX_214             aug-cc-pVQZ    PBE-D3       nocc=400  nvirt=13048  np=2788093  nbf_aux=23260
+[2026-03-12 23:32:26]   [CHECKPOINT] 42/120 rows saved
+[2026-03-12 23:36:20]   [  43/120] 3ACX_234             cc-pVDZ        PBE-D3       nocc=438  nvirt=1776  np=3033339  nbf_aux=10834
+[2026-03-12 23:40:17]   [  44/120] 3ACX_234             cc-pVTZ        PBE-D3       nocc=438  nvirt=4694  np=3035579  nbf_aux=12704
+[2026-03-12 23:44:18]   [  45/120] 3ACX_234             cc-pVQZ        PBE-D3       nocc=438  nvirt=9482  np=3037144  nbf_aux=18314
+[2026-03-12 23:48:13]   [  46/120] 3ACX_234             aug-cc-pVDZ    PBE-D3       nocc=438  nvirt=3292  np=3041365  nbf_aux=13752
+[2026-03-12 23:52:13]   [  47/120] 3ACX_234             aug-cc-pVTZ    PBE-D3       nocc=438  nvirt=7612  np=3041365  nbf_aux=17492
+[2026-03-12 23:56:20]   [  48/120] 3ACX_234             aug-cc-pVQZ    PBE-D3       nocc=438  nvirt=14270  np=3041365  nbf_aux=25440
+[2026-03-12 23:56:20]   [CHECKPOINT] 48/120 rows saved
+[2026-03-13 00:01:12]   [  49/120] 3ACX_254             cc-pVDZ        PBE-D3       nocc=476  nvirt=1928  np=3292278  nbf_aux=11764
+[2026-03-13 00:06:06]   [  50/120] 3ACX_254             cc-pVTZ        PBE-D3       nocc=476  nvirt=5096  np=3294652  nbf_aux=13794
+[2026-03-13 00:11:06]   [  51/120] 3ACX_254             cc-pVQZ        PBE-D3       nocc=476  nvirt=10294  np=3296372  nbf_aux=19884
+[2026-03-13 00:15:59]   [  52/120] 3ACX_254             aug-cc-pVDZ    PBE-D3       nocc=476  nvirt=3574  np=3300867  nbf_aux=14932
+[2026-03-13 00:20:57]   [  53/120] 3ACX_254             aug-cc-pVTZ    PBE-D3       nocc=476  nvirt=8264  np=3300867  nbf_aux=18992
+[2026-03-13 00:26:04]   [  54/120] 3ACX_254             aug-cc-pVQZ    PBE-D3       nocc=476  nvirt=15492  np=3300867  nbf_aux=27620
+[2026-03-13 00:26:04]   [CHECKPOINT] 54/120 rows saved
+[2026-03-13 00:31:55]   [  55/120] 3ACX_271             cc-pVDZ        PBE-D3       nocc=510  nvirt=2060  np=3505817  nbf_aux=12578
+[2026-03-13 00:37:48]   [  56/120] 3ACX_271             cc-pVTZ        PBE-D3       nocc=510  nvirt=5444  np=3508296  nbf_aux=14745
+[2026-03-13 00:43:48]   [  57/120] 3ACX_271             cc-pVQZ        PBE-D3       nocc=510  nvirt=10995  np=3510134  nbf_aux=21246
+[2026-03-13 00:49:40]   [  58/120] 3ACX_271             aug-cc-pVDZ    PBE-D3       nocc=510  nvirt=3819  np=3514835  nbf_aux=15962
+[2026-03-13 00:55:37]   [  59/120] 3ACX_271             aug-cc-pVTZ    PBE-D3       nocc=510  nvirt=8828  np=3514835  nbf_aux=20296
+[2026-03-13 01:01:43]   [  60/120] 3ACX_271             aug-cc-pVQZ    PBE-D3       nocc=510  nvirt=16546  np=3514835  nbf_aux=29506
+[2026-03-13 01:01:43]   [CHECKPOINT] 60/120 rows saved
+[2026-03-13 01:08:57]   [  61/120] 3ACX_291             cc-pVDZ        PBE-D3       nocc=548  nvirt=2212  np=3756609  nbf_aux=13508
+[2026-03-13 01:16:14]   [  62/120] 3ACX_291             cc-pVTZ        PBE-D3       nocc=548  nvirt=5846  np=3759133  nbf_aux=15835
+[2026-03-13 01:23:38]   [  63/120] 3ACX_291             cc-pVQZ        PBE-D3       nocc=548  nvirt=11807  np=3760968  nbf_aux=22816
+[2026-03-13 01:30:52]   [  64/120] 3ACX_291             aug-cc-pVDZ    PBE-D3       nocc=548  nvirt=4101  np=3765786  nbf_aux=17142
+[2026-03-13 01:38:14]   [  65/120] 3ACX_291             aug-cc-pVTZ    PBE-D3       nocc=548  nvirt=9480  np=3765786  nbf_aux=21796
+[2026-03-13 01:45:47]   [  66/120] 3ACX_291             aug-cc-pVQZ    PBE-D3       nocc=548  nvirt=17768  np=3765786  nbf_aux=31686
+[2026-03-13 01:45:47]   [CHECKPOINT] 66/120 rows saved
+[2026-03-13 01:54:19]   [  67/120] 3ACX_311             cc-pVDZ        PBE-D3       nocc=586  nvirt=2364  np=4010645  nbf_aux=14438
+[2026-03-13 02:02:54]   [  68/120] 3ACX_311             cc-pVTZ        PBE-D3       nocc=586  nvirt=6248  np=4013285  nbf_aux=16925
+[2026-03-13 02:11:37]   [  69/120] 3ACX_311             cc-pVQZ        PBE-D3       nocc=586  nvirt=12619  np=4015216  nbf_aux=24386
+[2026-03-13 02:20:12]   [  70/120] 3ACX_311             aug-cc-pVDZ    PBE-D3       nocc=586  nvirt=4383  np=4020168  nbf_aux=18322
+[2026-03-13 02:28:52]   [  71/120] 3ACX_311             aug-cc-pVTZ    PBE-D3       nocc=586  nvirt=10132  np=4020168  nbf_aux=23296
+[2026-03-13 02:37:46]   [  72/120] 3ACX_311             aug-cc-pVQZ    PBE-D3       nocc=586  nvirt=18990  np=4020168  nbf_aux=33866
+[2026-03-13 02:37:46]   [CHECKPOINT] 72/120 rows saved
+[2026-03-13 02:47:54]   [  73/120] 3ACX_331             cc-pVDZ        PBE-D3       nocc=624  nvirt=2516  np=4268215  nbf_aux=15368
+[2026-03-13 02:58:04]   [  74/120] 3ACX_331             cc-pVTZ        PBE-D3       nocc=624  nvirt=6650  np=4270998  nbf_aux=18015
+[2026-03-13 03:08:22]   [  75/120] 3ACX_331             cc-pVQZ        PBE-D3       nocc=624  nvirt=13431  np=4273061  nbf_aux=25956
+[2026-03-13 03:18:31]   [  76/120] 3ACX_331             aug-cc-pVDZ    PBE-D3       nocc=624  nvirt=4665  np=4278333  nbf_aux=19502
+[2026-03-13 03:28:47]   [  77/120] 3ACX_331             aug-cc-pVTZ    PBE-D3       nocc=624  nvirt=10784  np=4278333  nbf_aux=24796
+[2026-03-13 03:39:16]   [  78/120] 3ACX_331             aug-cc-pVQZ    PBE-D3       nocc=624  nvirt=20212  np=4278333  nbf_aux=36046
+[2026-03-13 03:39:16]   [CHECKPOINT] 78/120 rows saved
+[2026-03-13 03:50:41]   [  79/120] 3ACX_348             cc-pVDZ        PBE-D3       nocc=658  nvirt=2648  np=4485690  nbf_aux=16182
+[2026-03-13 04:02:10]   [  80/120] 3ACX_348             cc-pVTZ        PBE-D3       nocc=658  nvirt=6998  np=4488644  nbf_aux=18966
+[2026-03-13 04:13:49]   [  81/120] 3ACX_348             cc-pVQZ        PBE-D3       nocc=658  nvirt=14132  np=4490735  nbf_aux=27318
+[2026-03-13 04:25:15]   [  82/120] 3ACX_348             aug-cc-pVDZ    PBE-D3       nocc=658  nvirt=4910  np=4496184  nbf_aux=20532
+[2026-03-13 04:36:51]   [  83/120] 3ACX_348             aug-cc-pVTZ    PBE-D3       nocc=658  nvirt=11348  np=4496184  nbf_aux=26100
+[2026-03-13 04:48:42]   [  84/120] 3ACX_348             aug-cc-pVQZ    PBE-D3       nocc=658  nvirt=21266  np=4496184  nbf_aux=37932
+[2026-03-13 04:48:42]   [CHECKPOINT] 84/120 rows saved
+[2026-03-13 05:01:53]   [  85/120] 3ACX_368             cc-pVDZ        PBE-D3       nocc=696  nvirt=2800  np=4746197  nbf_aux=17112
+[2026-03-13 05:15:11]   [  86/120] 3ACX_368             cc-pVTZ        PBE-D3       nocc=696  nvirt=7400  np=4749240  nbf_aux=20056
+[2026-03-13 05:28:39]   [  87/120] 3ACX_368             cc-pVQZ        PBE-D3       nocc=696  nvirt=14944  np=4751382  nbf_aux=28888
+[2026-03-13 05:41:56]   [  88/120] 3ACX_368             aug-cc-pVDZ    PBE-D3       nocc=696  nvirt=5192  np=4756964  nbf_aux=21712
+[2026-03-13 05:55:20]   [  89/120] 3ACX_368             aug-cc-pVTZ    PBE-D3       nocc=696  nvirt=12000  np=4756964  nbf_aux=27600
+[2026-03-13 06:09:03]   [  90/120] 3ACX_368             aug-cc-pVQZ    PBE-D3       nocc=696  nvirt=22488  np=4756964  nbf_aux=40112
+[2026-03-13 06:09:03]   [CHECKPOINT] 90/120 rows saved
+[2026-03-13 06:23:52]   [  91/120] 3ACX_385             cc-pVDZ        PBE-D3       nocc=730  nvirt=2932  np=4967104  nbf_aux=17926
+[2026-03-13 06:38:47]   [  92/120] 3ACX_385             cc-pVTZ        PBE-D3       nocc=730  nvirt=7748  np=4970331  nbf_aux=21007
+[2026-03-13 06:53:54]   [  93/120] 3ACX_385             cc-pVQZ        PBE-D3       nocc=730  nvirt=15645  np=4972574  nbf_aux=30250
+[2026-03-13 07:08:46]   [  94/120] 3ACX_385             aug-cc-pVDZ    PBE-D3       nocc=730  nvirt=5437  np=4978453  nbf_aux=22742
+[2026-03-13 07:23:48]   [  95/120] 3ACX_385             aug-cc-pVTZ    PBE-D3       nocc=730  nvirt=12564  np=4978453  nbf_aux=28904
+[2026-03-13 07:39:12]   [  96/120] 3ACX_385             aug-cc-pVQZ    PBE-D3       nocc=730  nvirt=23542  np=4978453  nbf_aux=41998
+[2026-03-13 07:39:12]   [CHECKPOINT] 96/120 rows saved
+[2026-03-13 07:55:59]   [  97/120] 3ACX_405             cc-pVDZ        PBE-D3       nocc=768  nvirt=3084  np=5225061  nbf_aux=18856
+[2026-03-13 08:12:50]   [  98/120] 3ACX_405             cc-pVTZ        PBE-D3       nocc=768  nvirt=8150  np=5228420  nbf_aux=22097
+[2026-03-13 08:29:57]   [  99/120] 3ACX_405             cc-pVQZ        PBE-D3       nocc=768  nvirt=16457  np=5230821  nbf_aux=31820
+[2026-03-13 08:46:45]   [ 100/120] 3ACX_405             aug-cc-pVDZ    PBE-D3       nocc=768  nvirt=5719  np=5236948  nbf_aux=23922
+[2026-03-13 09:03:45]   [ 101/120] 3ACX_405             aug-cc-pVTZ    PBE-D3       nocc=768  nvirt=13216  np=5236948  nbf_aux=30404
+[2026-03-13 09:21:07]   [ 102/120] 3ACX_405             aug-cc-pVQZ    PBE-D3       nocc=768  nvirt=24764  np=5236948  nbf_aux=44178
+[2026-03-13 09:21:07]   [CHECKPOINT] 102/120 rows saved
+[2026-03-13 09:40:13]   [ 103/120] 3ACX_425             cc-pVDZ        PBE-D3       nocc=806  nvirt=3236  np=5481642  nbf_aux=19786
+[2026-03-13 09:59:24]   [ 104/120] 3ACX_425             cc-pVTZ        PBE-D3       nocc=806  nvirt=8552  np=5485105  nbf_aux=23187
+[2026-03-13 10:18:52]   [ 105/120] 3ACX_425             cc-pVQZ        PBE-D3       nocc=806  nvirt=17269  np=5487621  nbf_aux=33390
+---------------------------------------
+Begin Slurm Epilog: Mar-13-2026 10:28:55
+Job ID:        4408248
+User ID:       vlita3
+Account:       chem
+Job name:      tv_3acx_PBED3
+Resources:     cpu=8,mem=32G,node=1
+Rsrc Used:     cput=4-00:03:20,vmem=0,walltime=12:00:25,mem=12053936K,energy_used=0
+Partition:     coc-cpu
+QOS:           coc-ice
+Nodes:         atl1-1-02-012-9-2
+---------------------------------------

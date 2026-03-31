@@ -1,0 +1,61 @@
+---------------------------------------
+Begin Slurm Prolog: Mar-13-2026 11:06:33
+Job ID:    4419012
+User ID:   vlita3
+Account:   chem
+Job name:  tv_3acx_HF
+Partition: coc-cpu
+QOS:       coc-ice
+---------------------------------------
+========================================
+Job started : Fri Mar 13 11:06:33 AM EDT 2026
+Node        : atl1-1-01-005-1-1.pace.gatech.edu
+Dataset     : 3acx
+Method      : HF
+Threads     : 8
+========================================
+[2026-03-13 11:06:46] [START] dataset=3acx  method=HF  threads=8
+[2026-03-13 11:06:46]         input pkl : /home/hice1/vlita3/ice_timing_vars/data/3acx_103+_20_in.pkl
+[2026-03-13 11:06:46]         output pkl: /home/hice1/vlita3/ice_timing_vars/output/3acx/3acx_HF.pkl
+[2026-03-13 11:06:46]         dataframe shape: (120, 7)  |  mol column: 'qcel_dimer'
+[2026-03-13 11:06:46]         psi4 version: 1.9.1  |  threads: 8
+[2026-03-13 11:06:46] [RESUME] Checkpoint found — 102/120 rows already done
+[2026-03-13 11:25:51]   [ 103/120] 3ACX_425             cc-pVDZ        HF           nocc=806  nvirt=3236  np=5481642  nbf_aux=19786
+[2026-03-13 11:45:01]   [ 104/120] 3ACX_425             cc-pVTZ        HF           nocc=806  nvirt=8552  np=5485105  nbf_aux=23187
+[2026-03-13 12:04:26]   [ 105/120] 3ACX_425             cc-pVQZ        HF           nocc=806  nvirt=17269  np=5487621  nbf_aux=33390
+[2026-03-13 12:23:36]   [ 106/120] 3ACX_425             aug-cc-pVDZ    HF           nocc=806  nvirt=6001  np=5493915  nbf_aux=25102
+[2026-03-13 12:42:54]   [ 107/120] 3ACX_425             aug-cc-pVTZ    HF           nocc=806  nvirt=13868  np=5493915  nbf_aux=31904
+[2026-03-13 13:02:51]   [ 108/120] 3ACX_425             aug-cc-pVQZ    HF           nocc=806  nvirt=25986  np=5493915  nbf_aux=46358
+[2026-03-13 13:02:51]   [CHECKPOINT] 108/120 rows saved
+[2026-03-13 13:24:16]   [ 109/120] 3ACX_445             cc-pVDZ        HF           nocc=844  nvirt=3388  np=5740697  nbf_aux=20716
+[2026-03-13 13:45:47]   [ 110/120] 3ACX_445             cc-pVTZ        HF           nocc=844  nvirt=8954  np=5744368  nbf_aux=24277
+[2026-03-13 14:07:33]   [ 111/120] 3ACX_445             cc-pVQZ        HF           nocc=844  nvirt=18081  np=5746871  nbf_aux=34960
+[2026-03-13 14:29:02]   [ 112/120] 3ACX_445             aug-cc-pVDZ    HF           nocc=844  nvirt=6283  np=5753461  nbf_aux=26282
+[2026-03-13 14:50:43]   [ 113/120] 3ACX_445             aug-cc-pVTZ    HF           nocc=844  nvirt=14520  np=5753461  nbf_aux=33404
+[2026-03-13 15:12:52]   [ 114/120] 3ACX_445             aug-cc-pVQZ    HF           nocc=844  nvirt=27208  np=5753461  nbf_aux=48538
+[2026-03-13 15:12:52]   [CHECKPOINT] 114/120 rows saved
+[2026-03-13 15:13:05]   [ 115/120] 3ACX_83              cc-pVDZ        HF           nocc=146  nvirt=620  np=1144079  nbf_aux=3742
+[2026-03-13 15:13:19]   [ 116/120] 3ACX_83              cc-pVTZ        HF           nocc=146  nvirt=1640  np=1145622  nbf_aux=4401
+[2026-03-13 15:13:34]   [ 117/120] 3ACX_83              cc-pVQZ        HF           nocc=146  nvirt=3319  np=1146818  nbf_aux=6378
+[2026-03-13 15:13:48]   [ 118/120] 3ACX_83              aug-cc-pVDZ    HF           nocc=146  nvirt=1147  np=1149824  nbf_aux=4762
+[2026-03-13 15:14:03]   [ 119/120] 3ACX_83              aug-cc-pVTZ    HF           nocc=146  nvirt=2660  np=1149824  nbf_aux=6080
+[2026-03-13 15:14:18]   [ 120/120] 3ACX_83              aug-cc-pVQZ    HF           nocc=146  nvirt=4998  np=1149824  nbf_aux=8882
+[2026-03-13 15:14:18]   [CHECKPOINT] 120/120 rows saved
+[2026-03-13 15:14:18] [DONE] Saved 120 rows -> /home/hice1/vlita3/ice_timing_vars/output/3acx/3acx_HF.pkl
+[2026-03-13 15:14:18] [CLEANUP] Checkpoint removed: /home/hice1/vlita3/ice_timing_vars/output/3acx/3acx_HF_checkpoint.pkl
+========================================
+Job finished: Fri Mar 13 03:14:19 PM EDT 2026
+Exit code   : 0
+========================================
+---------------------------------------
+Begin Slurm Epilog: Mar-13-2026 15:14:19
+Job ID:        4419012
+User ID:       vlita3
+Account:       chem
+Job name:      tv_3acx_HF
+Resources:     cpu=8,mem=32G,node=1
+Rsrc Used:     cput=1-09:02:08,vmem=0,walltime=04:07:46,mem=14552016K,energy_used=0
+Partition:     coc-cpu
+QOS:           coc-ice
+Nodes:         atl1-1-01-005-1-1
+---------------------------------------
