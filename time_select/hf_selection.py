@@ -503,17 +503,35 @@ def format_coefficients(params):
 
 
 def format_polynomial_expression(poly_func):
+    def strip_outer_parens(text):
+        text = text.strip()
+        while text.startswith("(") and text.endswith(")"):
+            depth = 0
+            wraps_all = True
+            for i, ch in enumerate(text):
+                if ch == "(":
+                    depth += 1
+                elif ch == ")":
+                    depth -= 1
+                    if depth == 0 and i != len(text) - 1:
+                        wraps_all = False
+                        break
+            if wraps_all and depth == 0:
+                text = text[1:-1].strip()
+            else:
+                break
+        return text
+
     src = inspect.getsource(poly_func).strip()
     if "lambda" not in src:
         return ""
     expr = src.split(":", 1)[1].strip()
     if expr.startswith("lambda"):
         expr = expr.split(":", 1)[1].strip()
-    if expr.startswith("(") and expr.endswith(")"):
-        expr = expr[1:-1]
     expr = re.sub(r"#.*", "", expr)
     expr = " ".join(expr.split())
     expr = re.sub(r",\s*$", "", expr)
+    expr = strip_outer_parens(expr)
     expr = re.sub(r"\(n_occ\s*\+\s*n_virt\)", "N_{ao}", expr)
     expr = re.sub(r"n_occ\s*\+\s*n_virt", "N_{ao}", expr)
     expr = re.sub(r"p\[(\d+)\]", r"c_{\1}", expr)
