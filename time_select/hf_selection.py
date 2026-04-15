@@ -399,13 +399,11 @@ time_polynomials = {
         * (n_occ**2 * n_virt**4)
         ** 1.0  # FNOCC: CCSD                 (psi4/src/psi4/fnocc/ccsd.cc:1414-1480) & (psi4/src/psi4/fnocc/ccsd.cc:1485-1560). DGEMM @ 1454-1461, 1526-1533
     ),
-    "FNO-CCSD(T)_dat": lambda p, n_occ, n_virt: (
+    "FNO-CCSD(T)_dat": lambda p, n_occ, nbf_aux, n_virt: (
         p[0]
         # + p[1] * ((n_occ + n_virt)**5)                               # FNOCC: Two Elec Int Trans   (psi4/src/psi4/libtrans/integraltransform_tei_1st_half.cc)
-        # + p[2] * (n_occ ** 2 * n_virt ** 4)**1.0                     # FNOCC: CCSD                 (psi4/src/psi4/fnocc/ccsd.cc:1414-1480) & (psi4/src/psi4/fnocc/ccsd.cc:1485-1560). DGEMM @ 1454-1461, 1526-1533
-        + p[1]
-        * (n_occ**3 * n_virt**4)
-        ** 1.0  # FNOCC: triples              (psi4/src/psi4/fnocc/triples.cc:180-378)
+        + p[1] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)  # K                    # FNOCC: CCSD                 (psi4/src/psi4/fnocc/ccsd.cc:1414-1480) & (psi4/src/psi4/fnocc/ccsd.cc:1485-1560). DGEMM @ 1454-1461, 1526-1533
+        + p[1] * (n_occ**3 * n_virt**4)** 1.0  # FNOCC: triples              (psi4/src/psi4/fnocc/triples.cc:180-378)
     ),
 }
 
@@ -447,7 +445,7 @@ else:
         "HF": {
             "split": None,
             "split_type": "nbf_aux",
-            "le": ("HF_dat", {"n_params": 2, "bounds": (0.0, None)}),
+            "le": ("HF_dat", {"n_params": 2, "bounds": (0.0, None), "params0": [1.0, 1.0]}),
             "gt": ("HF_test4", {"n_params": 3, "bounds": (0.0, None)}),
         },
         # "M05-2X": {
@@ -467,7 +465,8 @@ else:
             "split_type": "np_total",
             "le": (
                 "FNO-CCSD(T)_dat",
-                {"n_params": 2, "bounds": [(0.1, 100), (1e-14, 1e-8)]},
+                {"n_params": 3, "bounds": [(0.1, 100), (1e-14, 1e-8), (1e-14, 1e-8)],
+                }
             ),
             "gt": ("M05-2X_1", {"n_params": 3, "bounds": (0.0, None)}),
         },
@@ -626,8 +625,13 @@ def optimize_time(
         assert len(bounds) == n_params, (
             "interpreting bounds as a list, bounds given dont match number of parameters"
         )
-    params0 = [5.67912758e-12] * n_params
-    params0[0] = 3.20909883e01
+    if "params0" in config.keys():
+        params0 = config["params0"] 
+    
+    else:
+        params0 = [5.67912758e-12] * n_params
+        params0[0] = 3.20909883e01
+
     best = {"params": np.array(params0, dtype=float), "loss": np.inf}
 
     def rmse(params):
@@ -1181,7 +1185,7 @@ def run_method(method):
 
     # Partition by log(time) threshold (if configured)
     df_valid = df[df["time(s)"].notna()].copy()
-    df_valid = df_valid[df_valid["time(s)"] > 10**0.5].copy()
+    df_valid = df_valid[df_valid["time(s)"] > 10**1.0].copy()
     poly_cfg = POLY_CONFIGS.get(method)
     if poly_cfg is None:
         print(f"No POLY_CONFIGS entry for method '{method}'. Skipping.")
