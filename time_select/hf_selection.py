@@ -51,6 +51,11 @@ LATEX_TABLE_NAME = "time_fit_table.tex"
 
 COMPOSITE_POLYS = 0 # set to 1 to use polynomials that divide timing data into 2 subsets
 
+FIT_LINEAR_TIME = 0 # set to 1 to fit in linear time space
+SCALE_FEATURES = 0  # set to 1 to scale polynomial input variables
+SCALE_TARGET = 0    # set to 1 to scale time(s) target when FIT_LINEAR_TIME=1
+SCALER_TYPE = "standard"  # "standard" or "minmax"
+
 DATA = "filtered_method_dfs"
 
 PLOTS_DIR_DEFAULT = os.path.join(os.path.dirname(__file__), "plots")
@@ -86,327 +91,350 @@ def apply_plot_style():
 
 # Timing polynomial (from p2_user.py)
 time_polynomials = {
-    "HF_test4": lambda p, n_occ, n_virt, nbf_aux: (
-        p[0] 
-        + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux) # K
-        + p[2] * (nbf_aux * (n_occ + n_virt) ** 2) # J
-    ),
-
-    "MP2_test6": lambda p, n_occ, n_virt, nbf_aux: (
-        p[0]
-        + p[1] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # MP2 transformation: O(N_aux × N_bf^2 × N_occ)
-        + p[2] * (nbf_aux**2 * n_occ * n_virt)  # MP2 fitting: O(N_occ × N_virt × N_aux^2)
-        + p[3] * (nbf_aux * n_occ**2 * n_virt**2)  # MP2 form 2e int: O(N_occ^2 × N_virt^2 × N_aux)
-    ),
-
-    "MP2_test7": lambda p, n_occ, n_virt, nbf_aux: (
-        p[0]
-        + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)
-        + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)
-        + p[3] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # MP2 transformation: O(N_aux × N_bf^2 × N_occ)
-        + p[4] * (nbf_aux**2 * n_occ * n_virt)  # MP2 fitting: O(N_occ × N_virt × N_aux^2)
-        + p[5] * (nbf_aux * n_occ**2 * n_virt**2)  # MP2 energy: O(N_occ^2 × N_virt^2 × N_aux)
-    ),
-
-    "wB97X-V_2_le": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-        p[0] + p[1] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
-        + p[2] * (nbf_aux * (n_occ + n_virt)**2) 
-        + p[3] * ((n_occ + n_virt) * np_total) 
-        + p[4] * ((0.5 * np_total) ** 2)
-    ),
-
-    "wB97X-V_2_gt": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-        p[0] + p[1] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
-        + p[2] * (nbf_aux * (n_occ + n_virt)**2) 
-        + p[3] * ((n_occ + n_virt) ** 1.1 * np_total) 
-        + p[4] * ((0.8*np_total) ** 2)
-    ),
-
-    "B3LYP-D3_1": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-        p[0] + p[1] * ((n_occ + n_virt) * np_total) 
-        + p[2] * (((n_occ + n_virt)**2 * nbf_aux) + ((n_occ + n_virt)**2 * nbf_aux) + nbf_aux**2) 
-        + p[3] * (nbf_aux**2 + nbf_aux**3)
-    ),
-
-    "B2PLYP-D3_2": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-        p[0]  # Constant overhead
-        + p[1] * (np_total * (n_occ + n_virt))  # DFT XC (B88+LYP): O(N_grid × N_bf^1.4)
-        + p[2] * (nbf_aux * (n_occ + n_virt)**2)  # J matrix: O(N_aux × N_bf^2)
-        + p[3] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # K matrix: O(N_bf^2 × N_occ × N_aux)
-        + p[4] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # MP2 transformation: O(N_aux × N_bf^2 × N_occ)
-        + p[5] * (nbf_aux**2 * n_occ * n_virt)  # MP2 fitting: O(N_occ × N_virt × N_aux^2)
-        + p[6] * (nbf_aux * n_occ**2 * n_virt**2)  # MP2 energy: O(N_occ^2 × N_virt^2 × N_aux)
-    ),
-    "B2PLYP-D3_2_1": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-        p[0]  # Constant overhead
-        + p[1] * (np_total * (n_occ + n_virt)**1.2)  # DFT XC (B88+LYP): O(N_grid × N_bf^1.4)
-        + p[2] * (nbf_aux * (n_occ + n_virt)**2)  # J matrix: O(N_aux × N_bf^2)
-        + p[3] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # K matrix: O(N_bf^2 × N_occ × N_aux)
-        + p[4] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # MP2 transformation: O(N_aux × N_bf^2 × N_occ)
-        + p[5] * (nbf_aux**2 * n_occ * n_virt)  # MP2 fitting: O(N_occ × N_virt × N_aux^2)
-        + p[6] * (nbf_aux * n_occ**2 * n_virt**2)  # MP2 energy: O(N_occ^2 × N_virt^2 × N_aux)
-    ),
-
-    "M05-2X_2": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-        p[0]  # Constant overhead
-        + p[1] * (np_total * (n_occ + n_virt)**1.2)  # Meta-GGA XC: O(N_grid × N_bf^1.4)
-        + p[2] * (nbf_aux * (n_occ + n_virt)**2)  # J matrix: O(N_aux × N_bf^2)
-        + p[3] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # K matrix: O(N_bf^2 × N_occ × N_aux)
-    ),  
-
-    "PBE-D3_2": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-        p[0] 
-        + p[1] * ((n_occ + n_virt)**1.25 * np_total) 
-        + p[2] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
-        + p[3] * (nbf_aux * (n_occ + n_virt)**2)
-    ),
-
-    "PBE-D3_2_1": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-        p[0] 
-        + p[1] * ((n_occ + n_virt)**1.25 * np_total) 
-        + p[2] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
-        + p[3] * (nbf_aux * (n_occ + n_virt)**2)
-    ),
-
-    # "PBE0": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-    #     p[0]
-    #     + p[1] * nbf_aux * (n_occ + n_virt)**2                 # J matrix
-    #     + p[2] * nbf_aux * (n_occ + n_virt)**2 * n_occ         # 25% exact exchange
-    #     + p[3] * np_total * (n_occ + n_virt)**1.5              # GGA grid integration
+    # "HF_test4": lambda p, n_occ, n_virt, nbf_aux: (
+    #     p[0] 
+    #     + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux) # K
+    #     + p[2] * (nbf_aux * (n_occ + n_virt) ** 2) # J
     # ),
 
-    # "PBE-D3_1": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-    #     p[0] 
-    #     + p[1] * ((n_occ + n_virt) * np_total) 
+    # "MP2_test6": lambda p, n_occ, n_virt, nbf_aux: (
+    #     p[0]
+    #     + p[1] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # MP2 transformation: O(N_aux × N_bf^2 × N_occ)
+    #     + p[2] * (nbf_aux**2 * n_occ * n_virt)  # MP2 fitting: O(N_occ × N_virt × N_aux^2)
+    #     + p[3] * (nbf_aux * n_occ**2 * n_virt**2)  # MP2 form 2e int: O(N_occ^2 × N_virt^2 × N_aux)
+    # ),
+
+    # "MP2_test7": lambda p, n_occ, n_virt, nbf_aux: (
+    #     p[0]
+    #     + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)
+    #     + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)
+    #     + p[3] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # MP2 transformation: O(N_aux × N_bf^2 × N_occ)
+    #     + p[4] * (nbf_aux**2 * n_occ * n_virt)  # MP2 fitting: O(N_occ × N_virt × N_aux^2)
+    #     + p[5] * (nbf_aux * n_occ**2 * n_virt**2)  # MP2 energy: O(N_occ^2 × N_virt^2 × N_aux)
+    # ),
+
+    # "wB97X-V_2_le": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0] + p[1] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
+    #     + p[2] * (nbf_aux * (n_occ + n_virt)**2) 
+    #     + p[3] * ((n_occ + n_virt) * np_total) 
+    #     + p[4] * ((0.5 * np_total) ** 2)
+    # ),
+
+    # "wB97X-V_2_gt": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0] + p[1] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
+    #     + p[2] * (nbf_aux * (n_occ + n_virt)**2) 
+    #     + p[3] * ((n_occ + n_virt) ** 1.1 * np_total) 
+    #     + p[4] * ((0.8*np_total) ** 2)
+    # ),
+
+    # "B3LYP-D3_1": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0] + p[1] * ((n_occ + n_virt) * np_total) 
     #     + p[2] * (((n_occ + n_virt)**2 * nbf_aux) + ((n_occ + n_virt)**2 * nbf_aux) + nbf_aux**2) 
     #     + p[3] * (nbf_aux**2 + nbf_aux**3)
     # ),
 
-    "CCSD_test_1": lambda p, n_occ, n_virt: (
-        p[0] 
-        + p[1] * (n_occ ** 1 * n_virt ** 1) 
-        + p[2] * (n_occ ** 3 * n_virt ** 2) 
-        + p[3] * (n_occ ** 2 * n_virt ** 2) 
-        + p[4] * (n_occ ** 2 * n_virt ** 3) 
-        + p[5] * (n_occ ** 3 * n_virt ** 3) 
-        + p[6] * (n_occ ** 2 * n_virt ** 4) 
-        + p[7] * (n_occ ** 4 * n_virt ** 2)
-    ),
+    # "B2PLYP-D3_2": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0]  # Constant overhead
+    #     + p[1] * (np_total * (n_occ + n_virt))  # DFT XC (B88+LYP): O(N_grid × N_bf^1.4)
+    #     + p[2] * (nbf_aux * (n_occ + n_virt)**2)  # J matrix: O(N_aux × N_bf^2)
+    #     + p[3] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # K matrix: O(N_bf^2 × N_occ × N_aux)
+    #     + p[4] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # MP2 transformation: O(N_aux × N_bf^2 × N_occ)
+    #     + p[5] * (nbf_aux**2 * n_occ * n_virt)  # MP2 fitting: O(N_occ × N_virt × N_aux^2)
+    #     + p[6] * (nbf_aux * n_occ**2 * n_virt**2)  # MP2 energy: O(N_occ^2 × N_virt^2 × N_aux)
+    # ),
+    # "B2PLYP-D3_2_1": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0]  # Constant overhead
+    #     + p[1] * (np_total * (n_occ + n_virt)**1.2)  # DFT XC (B88+LYP): O(N_grid × N_bf^1.4)
+    #     + p[2] * (nbf_aux * (n_occ + n_virt)**2)  # J matrix: O(N_aux × N_bf^2)
+    #     + p[3] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # K matrix: O(N_bf^2 × N_occ × N_aux)
+    #     + p[4] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # MP2 transformation: O(N_aux × N_bf^2 × N_occ)
+    #     + p[5] * (nbf_aux**2 * n_occ * n_virt)  # MP2 fitting: O(N_occ × N_virt × N_aux^2)
+    #     + p[6] * (nbf_aux * n_occ**2 * n_virt**2)  # MP2 energy: O(N_occ^2 × N_virt^2 × N_aux)
+    # ),
+
+    # "M05-2X_2": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0]  # Constant overhead
+    #     + p[1] * (np_total * (n_occ + n_virt)**1.2)  # Meta-GGA XC: O(N_grid × N_bf^1.4)
+    #     + p[2] * (nbf_aux * (n_occ + n_virt)**2)  # J matrix: O(N_aux × N_bf^2)
+    #     + p[3] * (nbf_aux * (n_occ + n_virt)**2 * n_occ)  # K matrix: O(N_bf^2 × N_occ × N_aux)
+    # ),  
+
+    # "PBE-D3_2": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0] 
+    #     + p[1] * ((n_occ + n_virt)**1.25 * np_total) 
+    #     + p[2] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
+    #     + p[3] * (nbf_aux * (n_occ + n_virt)**2)
+    # ),
+
+    # "PBE-D3_2_1": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0] 
+    #     + p[1] * ((n_occ + n_virt)**1.25 * np_total) 
+    #     + p[2] * (n_occ * (n_occ + n_virt)**2 * nbf_aux) 
+    #     + p[3] * (nbf_aux * (n_occ + n_virt)**2)
+    # ),
+
+    # # "PBE0": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    # #     p[0]
+    # #     + p[1] * nbf_aux * (n_occ + n_virt)**2                 # J matrix
+    # #     + p[2] * nbf_aux * (n_occ + n_virt)**2 * n_occ         # 25% exact exchange
+    # #     + p[3] * np_total * (n_occ + n_virt)**1.5              # GGA grid integration
+    # # ),
+
+    # # "PBE-D3_1": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    # #     p[0] 
+    # #     + p[1] * ((n_occ + n_virt) * np_total) 
+    # #     + p[2] * (((n_occ + n_virt)**2 * nbf_aux) + ((n_occ + n_virt)**2 * nbf_aux) + nbf_aux**2) 
+    # #     + p[3] * (nbf_aux**2 + nbf_aux**3)
+    # # ),
+
+    # "CCSD_test_1": lambda p, n_occ, n_virt: (
+    #     p[0] 
+    #     + p[1] * (n_occ ** 1 * n_virt ** 1) 
+    #     + p[2] * (n_occ ** 3 * n_virt ** 2) 
+    #     + p[3] * (n_occ ** 2 * n_virt ** 2) 
+    #     + p[4] * (n_occ ** 2 * n_virt ** 3) 
+    #     + p[5] * (n_occ ** 3 * n_virt ** 3) 
+    #     + p[6] * (n_occ ** 2 * n_virt ** 4) 
+    #     + p[7] * (n_occ ** 4 * n_virt ** 2)
+    # ),
 
 
     # true fits below
 
 
-    "HF_true": lambda p, n_occ, n_virt, nbf_aux: (
-        p[0] 
-        + p[1] * (nbf_aux * (n_occ + n_virt) ** 2)          # J Build
-        + p[2] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)  # K Build
+    # "HF_true": lambda p, n_occ, n_virt, nbf_aux: (
+    #     p[0] 
+    #     + p[1] * (nbf_aux * (n_occ + n_virt) ** 2)          # J Build
+    #     + p[2] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)  # K Build
         
+    # ),
+
+    # "MP2_true": lambda p, n_occ, n_virt, nbf_aux: (
+    #     p[0] 
+    #     + p[1] * (nbf_aux * (n_occ + n_virt) ** 2)               # HF J Build
+    #     + p[2] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)       # HF K Build
+    #     + p[3] * (n_occ * (n_occ + n_virt)**2 * nbf_aux)         # 3-index int 1
+    #     + p[4] * (n_occ * n_virt * (n_occ + n_virt) * nbf_aux)   # 3-index int 2 
+    #     + p[5] * (n_occ**2 * n_virt**2 * nbf_aux)                # int transform
+    # ),
+
+    # "B3LYP-D3_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0]
+    #     + p[1] * (np_total * (n_occ + n_virt)**2)              # DFT exchange SHOULD THIS BE Nao^1 ?
+    #     + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)          # HF J Build
+    #     + p[3] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)  # HF K Build
+    # ),
+
+    # "B2PLYP-D3_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0]
+    #     + p[1] * (np_total * (n_occ + n_virt)**2)                   # DFT exchange SHOULD THIS BE Nao^1 ?
+    #     + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)               # HF J Build
+    #     + p[3] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)       # HF K Build
+    #     + p[4] * (n_occ * (n_occ + n_virt)**2 * nbf_aux)         # MP2 3-index int 1
+    #     + p[5] * (n_occ * n_virt * (n_occ + n_virt) * nbf_aux)   # MP2 3-index int 2 
+    #     + p[6] * (n_occ**2 * n_virt**2 * nbf_aux)                # MP2 int transform
+    # ),
+
+    # "M05-2X_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0]
+    #     + p[1] * (np_total * (n_occ + n_virt)**2)              # DFT exchange SHOULD THIS BE Nao^1 ?
+    #     + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)          # HF J Build
+    #     + p[3] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)  # HF K Build
+    # ),  
+
+    # "PBE-D3_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0]
+    #     + p[1] * (np_total * (n_occ + n_virt)**2)              # DFT exchange SHOULD THIS BE Nao^1 ?
+    #     + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)          # HF J Build
+    # ),
+
+    # "FNO-CCSD_true": lambda p, n_occ, n_virt: ( 
+    #     p[0] 
+    #     + p[1] * (n_occ * n_virt)             # J-term
+    #     + p[2] * (n_occ ** 3 * n_virt ** 2)   # H-term
+    #     + p[3] * (n_occ ** 2 * n_virt ** 2)   # F,I-term
+    #     + p[4] * (n_occ ** 2 * n_virt ** 3)   # G-term
+    #     + p[5] * (n_occ ** 3 * n_virt ** 3)   # C,D-term
+    #     + p[6] * (n_occ ** 2 * n_virt ** 4)   # B-term
+    #     + p[7] * (n_occ ** 4 * n_virt ** 2)   # A-term
+    # ),
+
+    # "FNO-CCSD(T)_true": lambda p, n_occ, n_virt: (
+    #     p[0] 
+    #     + p[1] * (n_occ * n_virt)             # J-term
+    #     + p[2] * (n_occ ** 3 * n_virt ** 2)   # H-term
+    #     + p[3] * (n_occ ** 2 * n_virt ** 2)   # F,I-term
+    #     + p[4] * (n_occ ** 2 * n_virt ** 3)   # G-term
+    #     + p[5] * (n_occ ** 3 * n_virt ** 3)   # C,D-term
+    #     + p[6] * (n_occ ** 2 * n_virt ** 4)   # B-term
+    #     + p[7] * (n_occ ** 4 * n_virt ** 2)   # A-term
+    #     + p[8] * (n_occ ** 3 * n_virt ** 4)   # T algorithm?
+    # ),
+
+    # "wB97X-V_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0]
+    #     + p[1] * (np_total * (n_occ + n_virt)**2)              # DFT exchange SHOULD THIS BE Nao^1 ?
+    #     + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)          # HF J Build
+    #     + p[3] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)  # HF K Build
+    #     + p[4] * (np_total ** 2)                            # VV10
+    # ),
+
+    # "wB97X-D_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    #     p[0]
+    #     + p[1] * (np_total * (n_occ + n_virt)**2)              # DFT exchange SHOULD THIS BE Nao^1 ?
+    #     + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)          # HF J Build
+    #     + p[3] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)  # HF K Build
+    # ),
+
+    # .dat fits below
+
+    "HF_dat": lambda p, n_occ, n_virt, nbf_aux: (
+        p[0]
+        # + p[1] * (nbf_aux * (n_occ + n_virt) ** 2)                    # DFH: AO Construction, 3-idx eris in AO basis  (psi4/src/psi4/lib3index/dfhelper.cc:1284-1347) (symmetric case)
+        # + p[2] * ((n_occ + n_virt) ** 2 * nbf_aux ** 2)**0.65         # AO-Met. Contraction     (psi4/src/psi4/lib3index/dfhelper.cc:1653-1678) (symmetric case)
+        # + p[3] * ((n_occ + n_virt) ** 2 * nbf_aux)**0.80              # J                       (psi4/src/psi4/lib3index/dfhelper.cc:3162-3223) (symmetric case)
+        # + p[1] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)      # K                       (psi4/src/psi4/lib3index/dfhelper.cc:3350-3377) (generic)
+    
+        # + p[1] * (nbf_aux * (n_occ + n_virt) ** 1.5)                # DFH: AO Construction
+        # + p[2] * ((n_occ + n_virt) ** 1.5 * nbf_aux ** 2)           # AO-Met. Contraction
+        # + p[3] * ((n_occ + n_virt) ** 1.5 * nbf_aux)                # J 
+        + p[1] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)            # K
     ),
 
-    "MP2_true": lambda p, n_occ, n_virt, nbf_aux: (
+    "PBE-D3_dat": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+        p[0]
+        + p[1] * (np_total)**1.0                                     # RV: Form V, DFT XC matrix           (psi4/src/psi4/libfock/v.cc:1261-1433) & (psi4/src/psi4/libfock/points.cc:202-221) & (GGA)
+        + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)**0.90             # J                       (psi4/src/psi4/lib3index/dfhelper.cc:3162-3223)
+    ),
+
+    "wB97X-D_dat": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+        p[0]
+        + p[1] * (np_total * (n_occ + n_virt)**1.0)                  # RV: Form V, DFT XC matrix           (psi4/src/psi4/libfock/v.cc:1261-1433) & (psi4/src/psi4/libfock/points.cc:202-221) (GGA)
+        + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)                   # (w)AO construction      (psi4/src/psi4/lib3index/dfhelper.cc:1284-1347) & (psi4/src/psi4/lib3index/dfhelper.cc:1349-1417)
+        + p[3] * ((n_occ + n_virt) ** 2 * nbf_aux ** 2)**0.65        # (w)AO-Met. Contraction  (psi4/src/psi4/lib3index/dfhelper.cc:1653-1678)
+        + p[4] * ((n_occ + n_virt) ** 2 * nbf_aux)**0.80             # J                       (psi4/src/psi4/lib3index/dfhelper.cc:3162-3223) (symmetric case)
+        + p[5] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)**0.80     # (w)K                    (psi4/src/psi4/lib3index/dfhelper.cc:3378-3438)
+    ),
+    
+    "wB97X-V_dat": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+        p[0]
+        + p[1] * (np_total* (n_occ + n_virt)**1.0)                   # RV: Form V, DFT XC matrix           (psi4/src/psi4/libfock/v.cc:1261-1433) & (psi4/src/psi4/libfock/points.cc:202-221) (GGA)
+        + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)                   # (w)AO construction      (psi4/src/psi4/lib3index/dfhelper.cc:1284-1347) & (psi4/src/psi4/lib3index/dfhelper.cc:1349-1417)
+        + p[3] * ((n_occ + n_virt) ** 2 * nbf_aux ** 2)**0.65        # (w)AO-Met. Contraction  (psi4/src/psi4/lib3index/dfhelper.cc:1653-1678)
+        + p[4] * ((n_occ + n_virt) ** 2 * nbf_aux)**0.80             # J                       (psi4/src/psi4/lib3index/dfhelper.cc:3162-3223) (symmetric case)
+        + p[5] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)**0.80     # (w)K                    (psi4/src/psi4/lib3index/dfhelper.cc:3378-3438)
+        + p[6] * (np_total ** 2)**0.70                               # RV: Form V, VV10                    (psi4/src/psi4/libfunctional/superfunctional.cc:928-1065) VV10 uses separate grid with flat pruning scheme followed by additional pruning        
+    ),
+
+    "MP2_dat": lambda p, n_occ, n_virt, nbf_aux: (
         p[0] 
-        + p[1] * (nbf_aux * (n_occ + n_virt) ** 2)               # HF J Build
-        + p[2] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)       # HF K Build
-        + p[3] * (n_occ * (n_occ + n_virt)**2 * nbf_aux)         # 3-index int 1
-        + p[4] * (n_occ * n_virt * (n_occ + n_virt) * nbf_aux)   # 3-index int 2 
-        + p[5] * (n_occ**2 * n_virt**2 * nbf_aux)                # int transform
+        + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)**0.85      # HF K Build
+        + p[2] * ((n_occ + n_virt)**2 * nbf_aux)**0.70                # DFMP2 (A|mn), construct 3-index ints
     ),
 
-    "B3LYP-D3_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    "B3LYP-D3_dat": lambda p, n_occ, n_virt, nbf_aux, np_total: (
         p[0]
-        + p[1] * (np_total * (n_occ + n_virt)**2)              # DFT exchange SHOULD THIS BE Nao^1 ?
-        + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)          # HF J Build
-        + p[3] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)  # HF K Build
+        + p[1] * (np_total * (n_occ + n_virt)**1.0)                  # RV: Form V, DFT XC matrix           (psi4/src/psi4/libfock/v.cc:1261-1433) & (psi4/src/psi4/libfock/points.cc:223-298) (meta GGA)
+        + p[2] * ((n_occ + n_virt) ** 2 * nbf_aux ** 2)              # AO-Met. Contraction     (psi4/src/psi4/lib3index/dfhelper.cc:1653-1678) (symmetric case)
+        + p[3] * ((n_occ + n_virt) ** 2 * nbf_aux)                   # J                       (psi4/src/psi4/lib3index/dfhelper.cc:3162-3223) (symmetric case)
+        + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)**0.75     # K                       (psi4/src/psi4/lib3index/dfhelper.cc:3350-3377) (generic)
     ),
 
-    "B2PLYP-D3_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    "B2PLYP-D3_dat": lambda p, n_occ, n_virt, nbf_aux, np_total: (
         p[0]
-        + p[1] * (np_total * (n_occ + n_virt)**2)                   # DFT exchange SHOULD THIS BE Nao^1 ?
-        + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)               # HF J Build
-        + p[3] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)       # HF K Build
-        + p[4] * (n_occ * (n_occ + n_virt)**2 * nbf_aux)         # MP2 3-index int 1
-        + p[5] * (n_occ * n_virt * (n_occ + n_virt) * nbf_aux)   # MP2 3-index int 2 
-        + p[6] * (n_occ**2 * n_virt**2 * nbf_aux)                # MP2 int transform
+        + p[1] * (np_total * (n_occ + n_virt)**1.0)**0.75            # RV: Form V, DFT XC matrix           (psi4/src/psi4/libfock/v.cc:1261-1433) & (psi4/src/psi4/libfock/points.cc:223-298) (GGA)
+        + p[2] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)**0.80     # K                       (psi4/src/psi4/lib3index/dfhelper.cc:3350-3377) (generic)
+        + p[3] * ((n_occ + n_virt) ** 2 * nbf_aux ** 2)              # AO-Met. Contraction     (psi4/src/psi4/lib3index/dfhelper.cc:1653-1678) (symmetric case)
+        + p[4] * ((n_occ + n_virt)**2 * nbf_aux)**0.80               # DFMP2 (A|mn), construct 3-index ints
     ),
 
-    "M05-2X_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+    "M05-2X_dat": lambda p, n_occ, n_virt, nbf_aux, np_total: (
         p[0]
-        + p[1] * (np_total * (n_occ + n_virt)**2)              # DFT exchange SHOULD THIS BE Nao^1 ?
-        + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)          # HF J Build
-        + p[3] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)  # HF K Build
-    ),  
-
-    "PBE-D3_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-        p[0]
-        + p[1] * (np_total * (n_occ + n_virt)**2)              # DFT exchange SHOULD THIS BE Nao^1 ?
-        + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)          # HF J Build
+        + p[1] * (np_total * (n_occ + n_virt)**1.0)                  # RV: Form V, DFT XC matrix           (psi4/src/psi4/libfock/v.cc:1261-1433) & (psi4/src/psi4/libfock/points.cc:223-298) (meta GGA)
+        + p[2] * ((n_occ + n_virt) ** 2 * nbf_aux ** 2)              # AO-Met. Contraction     (psi4/src/psi4/lib3index/dfhelper.cc:1653-1678) (symmetric case)
+        + p[3] * ((n_occ + n_virt) ** 2 * nbf_aux)                   # J                       (psi4/src/psi4/lib3index/dfhelper.cc:3162-3223) (symmetric case)
+        + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)**0.75     # K                       (psi4/src/psi4/lib3index/dfhelper.cc:3350-3377) (generic)
     ),
 
-    "FNO-CCSD_true": lambda p, n_occ, n_virt: ( 
+    "FNO-CCSD_dat": lambda p, n_occ, n_virt: ( 
         p[0] 
-        + p[1] * (n_occ * n_virt)             # J-term
-        + p[2] * (n_occ ** 3 * n_virt ** 2)   # H-term
-        + p[3] * (n_occ ** 2 * n_virt ** 2)   # F,I-term
-        + p[4] * (n_occ ** 2 * n_virt ** 3)   # G-term
-        + p[5] * (n_occ ** 3 * n_virt ** 3)   # C,D-term
-        + p[6] * (n_occ ** 2 * n_virt ** 4)   # B-term
-        + p[7] * (n_occ ** 4 * n_virt ** 2)   # A-term
+        + p[1] * ((n_occ + n_virt)**5)                               # FNOCC: Two Elec Int Trans   (psi4/src/psi4/libtrans/integraltransform_tei_1st_half.cc)
+        + p[2] * (n_occ ** 2 * n_virt ** 4)**1.0                     # FNOCC: CCSD                 (psi4/src/psi4/fnocc/ccsd.cc:1414-1480) & (psi4/src/psi4/fnocc/ccsd.cc:1485-1560). DGEMM @ 1454-1461, 1526-1533
     ),
 
-    "FNO-CCSD(T)_true": lambda p, n_occ, n_virt: (
+    "FNO-CCSD(T)_dat": lambda p, n_occ, n_virt: (
         p[0] 
-        + p[1] * (n_occ * n_virt)             # J-term
-        + p[2] * (n_occ ** 3 * n_virt ** 2)   # H-term
-        + p[3] * (n_occ ** 2 * n_virt ** 2)   # F,I-term
-        + p[4] * (n_occ ** 2 * n_virt ** 3)   # G-term
-        + p[5] * (n_occ ** 3 * n_virt ** 3)   # C,D-term
-        + p[6] * (n_occ ** 2 * n_virt ** 4)   # B-term
-        + p[7] * (n_occ ** 4 * n_virt ** 2)   # A-term
-        + p[8] * (n_occ ** 3 * n_virt ** 4)   # T algorithm?
+        # + p[1] * ((n_occ + n_virt)**5)                               # FNOCC: Two Elec Int Trans   (psi4/src/psi4/libtrans/integraltransform_tei_1st_half.cc)
+        # + p[2] * (n_occ ** 2 * n_virt ** 4)**1.0                     # FNOCC: CCSD                 (psi4/src/psi4/fnocc/ccsd.cc:1414-1480) & (psi4/src/psi4/fnocc/ccsd.cc:1485-1560). DGEMM @ 1454-1461, 1526-1533           
+        + p[1] * (n_occ ** 3 * n_virt ** 4)**1.0                     # FNOCC: triples              (psi4/src/psi4/fnocc/triples.cc:180-378)
     ),
-
-    "wB97X-V_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-        p[0]
-        + p[1] * (np_total * (n_occ + n_virt)**2)              # DFT exchange SHOULD THIS BE Nao^1 ?
-        + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)          # HF J Build
-        + p[3] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)  # HF K Build
-        + p[4] * (np_total ** 2)                            # VV10
-    ),
-
-    "wB97X-D_true": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-        p[0]
-        + p[1] * (np_total * (n_occ + n_virt)**2)              # DFT exchange SHOULD THIS BE Nao^1 ?
-        + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)          # HF J Build
-        + p[3] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)  # HF K Build
-    ),
-
 }
 
 if(COMPOSITE_POLYS):
-    POLY_CONFIGS = {
-        "wB97X-V": {
-            "split": 3600,
-            "split_type": "nbf_aux",
-            "le": ("wB97X-V_2_le", {"n_params": 5, "bounds": (0.0, None)}),
-            "gt": ("wB97X-V_2_gt", {"n_params": 5, "bounds": (0.0, None)}),
-        },
-        "wB97X-D": {
-            "split": 3600,
-            "split_type": "nbf_aux",
-            "le": ("wB97X-V_2_le", {"n_params": 5, "bounds": (0.0, None)}),
-            "gt": ("wB97X-V_2_gt", {"n_params": 5, "bounds": (0.0, None)}),
-        },        
-        "B3LYP-D3": {
-            "split": None,
-            "split_type": "np_total",
-            "le": ("B3LYP-D3_1", {"n_params": 4, "bounds": (0.0, None)}),
-            "gt": ("B3LYP-D3_1", {"n_params": 4, "bounds": (0.0, None)}),
-        },
-        "B2PLYP-D3": {
-            "split": 1.0e6,
-            "split_type": "np_total",
-            "le": ("B2PLYP-D3_2", {"n_params": 7, "bounds": (0.0, None)}),
-            "gt": ("B2PLYP-D3_2_1", {"n_params": 7, "bounds": (0.0, None)}),
-        },
-        "MP2": {
-            "split": 4000,
-            "split_type": "nbf_aux",
-            "le": ("MP2_test7", {"n_params": 6, "bounds": (0.0, None)}),
-            "gt": ("MP2_test7", {"n_params": 6, "bounds": (0.0, None)}),
-        },
-        "HF": {
-            "split": 3000,
-            "split_type": "nbf_aux",
-            "le": ("HF_test4", {"n_params": 3, "bounds": (0.0, None)}),
-            "gt": ("HF_test4", {"n_params": 3, "bounds": (0.0, None)}),
-        },
-        "M05-2X": {
-            "split": None,
-            "split_type": "nbf_aux",
-            "le": ("M05-2X_2", {"n_params": 4, "bounds": (0.0, None)}),
-            "gt": ("M05-2X_2", {"n_params": 4, "bounds": (0.0, None)}),
-        },
-        "PBE-D3": {
-            "split": 'basis',
-            "split_type": "basis",
-            "le": ("PBE-D3_2", {"n_params": 4, "bounds": (0.0, None)}),
-            "gt": ("PBE-D3_2_1", {"n_params": 4, "bounds": (0.0, None)}),
-        },
-        "FNO-CCSD(T)": {
-            "split": None,
-            "split_type": "np_total",
-            "le": ("CCSD_test_1", {"n_params": 8, "bounds": (0.0, None)}),
-            "gt": ("M05-2X_1", {"n_params": 3, "bounds": (0.0, None)}),
-        },
-        # "FNO-CCSD": {
-        #     "split": None,
-        #     "le": ("M05-2X_2", {"n_params": 4, "bounds": (0.0, None)}),
-        #     "gt": ("M05-2X_1", {"n_params": 3, "bounds": (0.0, None)}),
-        # },
-    }
+    raise ValueError
 
 else:
     POLY_CONFIGS = {
-        "wB97X-V": {
-            "split": None,
-            "split_type": "nbf_aux",
-            "le": ("wB97X-V_true", {"n_params": 5, "bounds": (0.0, None)}),
-            "gt": ("wB97X-V_2_gt", {"n_params": 5, "bounds": (0.0, None)}),
-        },
-        "wB97X-D": {
-            "split": None,
-            "split_type": "nbf_aux",
-            "le": ("wB97X-D_true", {"n_params": 4, "bounds": (0.0, None)}),
-            "gt": ("wB97X-V_2_gt", {"n_params": 5, "bounds": (0.0, None)}),
-        },        
-        "B3LYP-D3": {
-            "split": None,
-            "split_type": "np_total",
-            "le": ("B3LYP-D3_true", {"n_params": 4, "bounds": (0.0, None)}),
-            "gt": ("B3LYP-D3_1", {"n_params": 4, "bounds": (0.0, None)}),
-        },
-        "B2PLYP-D3": {
-            "split": None,
-            "split_type": "np_total",
-            "le": ("B2PLYP-D3_true", {"n_params": 7, "bounds": (0.0, None)}),
-            "gt": ("B2PLYP-D3_2_1", {"n_params": 7, "bounds": (0.0, None)}),
-        },
-        "MP2": {
-            "split": None,
-            "split_type": "nbf_aux",
-            "le": ("MP2_true", {"n_params": 6, "bounds": (0.0, None)}),
-            "gt": ("MP2_test7", {"n_params": 6, "bounds": (0.0, None)}),
-        },
+        # "wB97X-V": {
+        #     "split": None,
+        #     "split_type": "nbf_aux",
+        #     "le": ("wB97X-V_dat", {"n_params": 7, "bounds": (0.0, None)}),
+        #     "gt": ("wB97X-V_2_gt", {"n_params": 5, "bounds": (0.0, None)}),
+        # },
+        # "wB97X-D": {
+        #     "split": None,
+        #     "split_type": "nbf_aux",
+        #     "le": ("wB97X-D_dat", {"n_params": 6, "bounds": (0.0, None)}),
+        #     "gt": ("wB97X-V_2_gt", {"n_params": 5, "bounds": (0.0, None)}),
+        # },        
+        # "B3LYP-D3": {
+        #     "split": None,
+        #     "split_type": "np_total",
+        #     "le": ("B3LYP-D3_dat", {"n_params": 5, "bounds": (0.0, None)}),
+        #     "gt": ("B3LYP-D3_1", {"n_params": 4, "bounds": (0.0, None)}),
+        # },
+        # "B2PLYP-D3": {
+        #     "split": None,
+        #     "split_type": "np_total",
+        #     "le": ("B2PLYP-D3_dat", {"n_params": 5, "bounds": (0.0, None)}),
+        #     "gt": ("B2PLYP-D3_2_1", {"n_params": 7, "bounds": (0.0, None)}),
+        # },
+        # "MP2": {
+        #     "split": None,
+        #     "split_type": "nbf_aux",
+        #     "le": ("MP2_dat", {"n_params": 3, "bounds": (0.0, None)}),
+        #     "gt": ("MP2_test7", {"n_params": 6, "bounds": (0.0, None)}),
+        # },
         "HF": {
             "split": None,
             "split_type": "nbf_aux",
-            "le": ("HF_true", {"n_params": 3, "bounds": (0.0, None)}),
+            "le": ("HF_dat", {"n_params": 2, "bounds": (0.0, None)}),
             "gt": ("HF_test4", {"n_params": 3, "bounds": (0.0, None)}),
         },
-        "M05-2X": {
-            "split": None,
-            "split_type": "nbf_aux",
-            "le": ("M05-2X_true", {"n_params": 4, "bounds": (0.0, None)}),
-            "gt": ("M05-2X_2", {"n_params": 4, "bounds": (0.0, None)}),
-        },
-        "PBE-D3": {
-            "split": None,
-            "split_type": "basis",
-            "le": ("PBE-D3_true", {"n_params": 3, "bounds": (0.0, None)}),
-            "gt": ("PBE-D3_2_1", {"n_params": 4, "bounds": (0.0, None)}),
-        },
-        "FNO-CCSD(T)": {
+        # "M05-2X": {
+        #     "split": None,
+        #     "split_type": "nbf_aux",
+        #     "le": ("M05-2X_dat", {"n_params": 5, "bounds": (0.0, None)}),
+        #     "gt": ("M05-2X_2", {"n_params": 4, "bounds": (0.0, None)}),
+        # },
+        # "PBE-D3": {
+        #     "split": None,
+        #     "split_type": "basis",
+        #     "le": ("PBE-D3_dat", {"n_params": 3, "bounds": (0.0, None)}),
+        #     "gt": ("PBE-D3_2_1", {"n_params": 4, "bounds": (0.0, None)}),
+        # },
+        "FNO-CCSD(T)": { 
             "split": None,
             "split_type": "np_total",
-            "le": ("FNO-CCSD(T)_true", {"n_params": 9, "bounds": (0.0, None)}),
+            "le": ("FNO-CCSD(T)_dat", {"n_params": 2, "bounds": [(0.1, 100), (1e-14, 1e-8)]}),
             "gt": ("M05-2X_1", {"n_params": 3, "bounds": (0.0, None)}),
         },
-        "FNO-CCSD": {
-            "split": None,
-            "le": ("FNO-CCSD_true", {"n_params": 8, "bounds": (0.0, None)}),
-            "gt": ("M05-2X_1", {"n_params": 3, "bounds": (0.0, None)}),
-        },
+        # pre powell fit: grid search on coefficients grid must match feasible numerical ranges
+        # "FNO-CCSD": {
+        #     "split": None,
+        #     "le": ("FNO-CCSD_dat", {"n_params": 3, "bounds": (0.0, None)}),
+        #     "gt": ("M05-2X_1", {"n_params": 3, "bounds": (0.0, None)}),
+        # },
     }
 
 # ---------------------------------------------------------------------------
@@ -439,6 +467,67 @@ def extract_variables_from_df(df, var_names):
     return extracted
 
 
+def fit_scaler(values, scaler_type, enforce_nonnegative=False):
+    arr = np.asarray(values, dtype=float)
+    if scaler_type == "minmax":
+        vmin = np.nanmin(arr)
+        vmax = np.nanmax(arr)
+        return {"type": "minmax", "min": vmin, "max": vmax}
+    mean = np.nanmean(arr)
+    std = np.nanstd(arr)
+    scaler = {"type": "standard", "mean": mean, "std": std}
+    if enforce_nonnegative:
+        denom = std if std != 0 else 1.0
+        z_min = np.nanmin((arr - mean) / denom)
+        if z_min < 0:
+            scaler["shift"] = -z_min
+            print(
+                "Warning: standard scaling produced negative values; "
+                f"applying shift={scaler['shift']:.6f} to keep inputs nonnegative."
+            )
+    return scaler
+
+
+def scale_values(values, scaler):
+    arr = np.asarray(values, dtype=float)
+    if scaler is None:
+        return arr
+    if scaler["type"] == "minmax":
+        denom = scaler["max"] - scaler["min"]
+        if denom == 0:
+            return np.zeros_like(arr)
+        return (arr - scaler["min"]) / denom
+    denom = scaler["std"]
+    if denom == 0:
+        return np.zeros_like(arr)
+    scaled = (arr - scaler["mean"]) / denom
+    if "shift" in scaler:
+        scaled = scaled + scaler["shift"]
+    return scaled
+
+
+def get_df_columns_for_poly(poly_func):
+    var_mapping = {
+        "n_occ": "nocc",
+        "n_virt": "nvirt",
+        "nbf_aux": "nbf_aux",
+        "np_total": "np_total",
+        "nbf": "nbf",
+    }
+    var_names = get_polynomial_variables(poly_func)
+    return [var_mapping.get(var, var) for var in var_names]
+
+
+def apply_feature_scaling(df, feature_scalers, poly_func):
+    if not feature_scalers:
+        return df
+    df_scaled = df.copy()
+    for col in get_df_columns_for_poly(poly_func):
+        if col in df_scaled.columns and col in feature_scalers:
+            df_scaled[col] = scale_values(df_scaled[col].values, feature_scalers[col])
+    return df_scaled
+
+
 def get_split_series(df, split_type):
     allowed = {"n_occ", "n_virt", "nbf_aux", "np_total", "nbf", "time", "basis"}
     if split_type not in allowed:
@@ -463,27 +552,55 @@ def get_split_series(df, split_type):
     return df[col]
 
 
-def predict_log_time(params, df, poly_name):
+def predict_log_time(params, df, poly_name, feature_scalers=None):
     poly_func = time_polynomials[poly_name]
+    df_use = apply_feature_scaling(df, feature_scalers, poly_func)
     var_names = get_polynomial_variables(poly_func)
-    var_arrays = extract_variables_from_df(df, var_names)
+    var_arrays = extract_variables_from_df(df_use, var_names)
     raw = poly_func(params, *var_arrays)
-    return np.log10(np.abs(raw))
+    eps = 1e-12
+    return np.log10(np.clip(np.abs(raw), eps, None))
 
 
-def optimize_time(df_train, poly_name, config):
+def predict_time(params, df, poly_name, feature_scalers=None):
+    poly_func = time_polynomials[poly_name]
+    df_use = apply_feature_scaling(df, feature_scalers, poly_func)
+    var_names = get_polynomial_variables(poly_func)
+    var_arrays = extract_variables_from_df(df_use, var_names)
+    raw = poly_func(params, *var_arrays)
+    return np.abs(raw)
+
+def optimize_time(df_train, poly_name, config, feature_scalers=None, target_scaler=None):
     n_params = config["n_params"]
-    bounds = [config["bounds"]] * n_params
-    params0 = [1.0] * n_params
+    if isinstance(config["bounds"], tuple):
+        bounds = [config["bounds"]] * n_params
+
+    else:
+        bounds = config["bounds"]
+        assert len(bounds) == n_params, "interpreting bounds as a list, bounds given dont match number of parameters"
+    params0 = [5.67912758e-12] * n_params
+    params0[0] = 3.20909883e+01
 
     def rmse(params):
-        pred_log = predict_log_time(params, df_train, poly_name)
-        return root_mean_squared_error(df_train["log(time(s))"], pred_log)
+        if FIT_LINEAR_TIME:
+            pred = predict_time(params, df_train, poly_name, feature_scalers=feature_scalers)
+            if target_scaler is not None:
+                pred = scale_values(pred, target_scaler)
+                target = scale_values(df_train["time(s)"].values, target_scaler)
+            else:
+                target = df_train["time(s)"].values
+                v =root_mean_squared_error(df_train["log(time(s))"], pred_log)
+                print(params, v) 
+                return v
+        pred_log = predict_log_time(params, df_train, poly_name, feature_scalers=feature_scalers)
+        v =root_mean_squared_error(df_train["log(time(s))"], pred_log)
+        print(params, v) 
+        return v
 
     print(f"Timing polynomial: {poly_name}, n_params: {n_params}")
     print(f"Variables: {get_polynomial_variables(time_polynomials[poly_name])}")
 
-    ret = minimize(rmse, x0=params0, method="L-BFGS-B", bounds=bounds)
+    ret = minimize(rmse, x0=params0, method="powell", bounds=bounds)
     return ret.x
 
 
@@ -545,6 +662,7 @@ def format_polynomial_expression(poly_func):
     for key, val in replacements.items():
         expr = expr.replace(key, val)
     expr = expr.replace("**", "^")
+    expr = re.sub(r"\^(\d*\.\d+)", r"^{\1}", expr)
     expr = expr.replace("*", " \\cdot ")
     expr = expr.replace("+ -", "- ")
     expr = expr.replace(" - ", " + - ")
@@ -790,7 +908,7 @@ def plot_combined(method, df_train, df_test, y_train, y_test,
 
 
 def train_time_subset(df_subset, method, label, poly_name, config):
-    df_pool = df_subset[df_subset["time(s)"].notna() & (df_subset["time(s)"] > 6)].copy()
+    df_pool = df_subset[df_subset["time(s)"] .notna()].copy()
     if len(df_pool) < 10:
         print(f"  {label}: insufficient data (< 10 points) — skipping.")
         return None
@@ -798,12 +916,29 @@ def train_time_subset(df_subset, method, label, poly_name, config):
     df_train, df_test = train_test_split(df_pool, test_size=0.10, random_state=21)
     print(f"  {label}: Train {len(df_train)} Test {len(df_test)}")
 
-    params = optimize_time(df_train, poly_name, config)
+    feature_scalers = None
+    target_scaler = None
+    poly_func = time_polynomials[poly_name]
+    if SCALE_FEATURES:
+        feature_scalers = {}
+        for col in get_df_columns_for_poly(poly_func):
+            if col in df_train.columns:
+                feature_scalers[col] = fit_scaler(
+                    df_train[col].values,
+                    SCALER_TYPE,
+                    enforce_nonnegative=True,
+                )
+    if FIT_LINEAR_TIME and SCALE_TARGET:
+        target_scaler = fit_scaler(df_train["time(s)"].values, SCALER_TYPE)
+
+    params = optimize_time(df_train, poly_name, config,
+                           feature_scalers=feature_scalers,
+                           target_scaler=target_scaler)
     print(f"  {label} params: {params}")
     y_train = df_train["log(time(s))"].values
     y_test = df_test["log(time(s))"].values
-    y_train_pred = predict_log_time(params, df_train, poly_name)
-    y_test_pred = predict_log_time(params, df_test, poly_name)
+    y_train_pred = predict_log_time(params, df_train, poly_name, feature_scalers=feature_scalers)
+    y_test_pred = predict_log_time(params, df_test, poly_name, feature_scalers=feature_scalers)
 
     train_rmse = root_mean_squared_error(y_train, y_train_pred)
     test_rmse = root_mean_squared_error(y_test, y_test_pred)
@@ -825,6 +960,7 @@ def train_time_subset(df_subset, method, label, poly_name, config):
 
     return {
         "params": params,
+        "feature_scalers": feature_scalers,
         "df_train": df_train,
         "df_test": df_test,
         "train_rmse": train_rmse,
@@ -850,6 +986,7 @@ def run_method(method):
         "n_virtual": "nvirt",
         "basis_set": "basis",
         "user_time (parse)": "time(s)",
+        # "wall_time (parse)": "time(s)",
     })
 
     if ADJUST_FOR_MULTIPLICITY:
@@ -870,6 +1007,7 @@ def run_method(method):
 
     # Partition by log(time) threshold (if configured)
     df_valid = df[df["time(s)"].notna()].copy()
+    df_valid = df_valid[df_valid["time(s)"] > 10 ** 0.5].copy()
     poly_cfg = POLY_CONFIGS.get(method)
     if poly_cfg is None:
         print(f"No POLY_CONFIGS entry for method '{method}'. Skipping.")
@@ -942,20 +1080,32 @@ def run_method(method):
 
     if mask_train_high.any() and high_fit is not None:
         pred_train.loc[mask_train_high] = predict_log_time(
-            high_fit["params"], df_train[mask_train_high], poly_gt
+            high_fit["params"],
+            df_train[mask_train_high],
+            poly_gt,
+            feature_scalers=high_fit.get("feature_scalers"),
         )
     if mask_train_low.any():
         pred_train.loc[mask_train_low] = predict_log_time(
-            low_fit["params"], df_train[mask_train_low], poly_le
+            low_fit["params"],
+            df_train[mask_train_low],
+            poly_le,
+            feature_scalers=low_fit.get("feature_scalers"),
         )
 
     if mask_test_high.any() and high_fit is not None:
         pred_test.loc[mask_test_high] = predict_log_time(
-            high_fit["params"], df_test[mask_test_high], poly_gt
+            high_fit["params"],
+            df_test[mask_test_high],
+            poly_gt,
+            feature_scalers=high_fit.get("feature_scalers"),
         )
     if mask_test_low.any():
         pred_test.loc[mask_test_low] = predict_log_time(
-            low_fit["params"], df_test[mask_test_low], poly_le
+            low_fit["params"],
+            df_test[mask_test_low],
+            poly_le,
+            feature_scalers=low_fit.get("feature_scalers"),
         )
 
     y_train = df_train["log(time(s))"].values
@@ -969,6 +1119,11 @@ def run_method(method):
     test_r2 = r2_score(y_test, y_test_pred)
     train_mae = np.mean(np.abs(y_train - y_train_pred))
     test_mae = np.mean(np.abs(y_test - y_test_pred))
+    if split_val is None and low_fit is not None:
+        low_fit["train_rmse"] = train_rmse
+        low_fit["test_rmse"] = test_rmse
+        low_fit["train_mae"] = train_mae
+        low_fit["test_mae"] = test_mae
 
     plot_combined(
         method,
