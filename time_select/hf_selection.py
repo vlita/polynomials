@@ -273,9 +273,9 @@ time_polynomials = {
         # + p[2] * ((n_occ + n_virt) ** 2 * nbf_aux ** 2)**0.65         # AO-Met. Contraction     (psi4/src/psi4/lib3index/dfhelper.cc:1653-1678) (symmetric case)
         # + p[3] * ((n_occ + n_virt) ** 2 * nbf_aux)**0.80              # J                       (psi4/src/psi4/lib3index/dfhelper.cc:3162-3223) (symmetric case)
         # + p[1] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)      # K                       (psi4/src/psi4/lib3index/dfhelper.cc:3350-3377) (generic)
-        # + p[1] * (nbf_aux * (n_occ + n_virt) ** 1.5)                # DFH: AO Construction
-        # + p[2] * ((n_occ + n_virt) ** 1.5 * nbf_aux ** 2)           # AO-Met. Contraction
-        # + p[3] * ((n_occ + n_virt) ** 1.5 * nbf_aux)                # J
+        + p[1] * (nbf_aux * (n_occ + n_virt) ** 1.5)                # DFH: AO Construction
+        + p[2] * ((n_occ + n_virt) ** 1.5 * nbf_aux ** 2)           # AO-Met. Contraction
+        + p[3] * ((n_occ + n_virt) ** 1.5 * nbf_aux)                # J
         + p[1] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)  # K
     ),
     "PBE-D3_dat": lambda p, n_occ, n_virt, nbf_aux, np_total: (
@@ -445,7 +445,7 @@ else:
         "HF": {
             "split": None,
             "split_type": "nbf_aux",
-            "le": ("HF_dat", {"n_params": 2, "bounds": (0.0, None), "params0": [1.0, 1.0]}),
+            "le": ("HF_dat", {"n_params": 2, "bounds": [(0.1, 100), (1e-16, 1e-4)]}),
             "gt": ("HF_test4", {"n_params": 3, "bounds": (0.0, None)}),
         },
         # "M05-2X": {
