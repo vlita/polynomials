@@ -19,6 +19,8 @@ PLOTS_DIR = os.path.join(os.path.dirname(__file__), "plots_latex")
 BLOCK_PLOTS_DIR = os.path.join(PLOTS_DIR, "split_blocks")
 LATEX_FORMAT = "png"
 LATEX_TABLE_NAME = "time_fit_template.tex"
+INFERENCE_DF_NAME = "time_fit_inference_df.pkl"
+INFERENCE_CSV_NAME = "time_fit_inference_df.csv"
 
 os.makedirs(PLOTS_DIR, exist_ok=True)
 os.makedirs(BLOCK_PLOTS_DIR, exist_ok=True)
@@ -678,20 +680,20 @@ def format_polynomial_expression(poly_func):
     expr = " ".join(expr.split())
     expr = re.sub(r",\s*$", "", expr)
     expr = strip_outer_parens(expr)
-    expr = re.sub(r"\(n_occ\s*\+\s*n_virt\)", "N_{ao}", expr)
-    expr = re.sub(r"n_occ\s*\+\s*n_virt", "N_{ao}", expr)
+    expr = re.sub(r"\(n_occ\s*\+\s*n_virt\)", "N_{bf}", expr)
+    expr = re.sub(r"n_occ\s*\+\s*n_virt", "N_{bf}", expr)
     expr = re.sub(r"p\[(\d+)\]", r"c_{\1}", expr)
     replacements = {
         "n_occ": "N_{occ}",
         "n_virt": "N_{virt}",
         "nbf_aux": "N_{aux}",
-        "np_total": "N_{p}",
+        "np_total": "N_{g}",
         "nbf": "N_{bf}",
     }
     for key, val in replacements.items():
         expr = expr.replace(key, val)
     expr = expr.replace("**", "^")
-    expr = re.sub(r"\^(\d*\.\d+)", r"^{\1}", expr)
+    expr = re.sub(r"\^\s*(c_\{\d+\}|N_\{[^}]+\}|\d+(?:\.\d+)?)", r"^{\1}", expr)
     expr = expr.replace("*", " \\cdot ")
     expr = expr.replace("+ -", "- ")
     expr = expr.replace(" - ", " + - ")
@@ -707,26 +709,88 @@ def format_polynomial_expression(poly_func):
     return "$\\begin{array}{l}" + " \\\\ ".join(lines) + "\\end{array}$"
 
 
+def format_expression_with_raw_coeffs(poly_func, coeffs):
+    def strip_outer_parens(text):
+        text = text.strip()
+        while text.startswith("(") and text.endswith(")"):
+            depth = 0
+            wraps_all = True
+            for i, ch in enumerate(text):
+                if ch == "(":
+                    depth += 1
+                elif ch == ")":
+                    depth -= 1
+                    if depth == 0 and i != len(text) - 1:
+                        wraps_all = False
+                        break
+            if wraps_all and depth == 0:
+                text = text[1:-1].strip()
+            else:
+                break
+        return text
+
+    src = inspect.getsource(poly_func).strip()
+    if "lambda" not in src:
+        return ""
+    expr = src.split(":", 1)[1].strip()
+    if expr.startswith("lambda"):
+        expr = expr.split(":", 1)[1].strip()
+    expr = re.sub(r"#.*", "", expr)
+    expr = " ".join(expr.split())
+    expr = re.sub(r",\s*$", "", expr)
+    expr = strip_outer_parens(expr)
+
+    coeffs = np.asarray(coeffs, dtype=float)
+
+    def repl(match):
+        idx = int(match.group(1))
+        if idx < 0 or idx >= len(coeffs):
+            raise IndexError(f"Coefficient index p[{idx}] out of range for {len(coeffs)} params.")
+        return np.format_float_positional(coeffs[idx], precision=17, unique=False, trim="-")
+
+    return re.sub(r"p\[(\d+)\]", repl, expr)
+
+
+def write_inference_dataframe(rows, output_path, csv_path=None):
+    records = []
+    for row in rows:
+        records.append(
+            {
+                "method": row["method"],
+                "variables": row["variables"],
+                "coefficients": row["coefficients"],
+                "polynomial_expression_raw": row["polynomial_expression_raw"],
+                "prediction_expression": f"log10(abs({row['polynomial_expression_raw']}))",
+            }
+        )
+
+    df = pd.DataFrame.from_records(records)
+    df.to_pickle(output_path)
+    print(f"Inference dataframe saved: {output_path}")
+    if csv_path is not None:
+        df.to_csv(csv_path, index=False)
+        print(f"Inference CSV saved: {csv_path}")
+
+
 def write_latex_table(rows, output_path):
     header = (
-        "\\section{Time Estimation Equations}\\n\\n"
-        "\\small\\n"
-        "\\setlength{\\tabcolsep}{3pt}\\n"
-        "\\begin{longtable}{|l|c|c|c|c|p{3.2cm}|p{5.0cm}|}\\n"
-        "\\hline\\n"
-        "\\textbf{Method} & \\textbf{\\# train} & \\textbf{\\# test} "
-        "& \\textbf{Train MAE} & \\textbf{Test MAE} & \\textbf{Params} & \\textbf{Functional Form} \\\\ \\n"
-        "\\hline\\n"
-        "\\endhead\\n"
+        "\\small\n"
+        "\\setlength{\\tabcolsep}{3pt}\n"
+        "\\begin{longtable}{|l|c|c|c|c|p{3.2cm}|p{5.0cm}|}\n"
+        "\\hline\n"
+        "\\textbf{Method} & \\textbf{\\# Train} & \\textbf{\\# Test} "
+        "& \\textbf{Train MAE} & \\textbf{Test MAE} & \\textbf{Coefficients} & \\textbf{Functional Form} \\\\ \n"
+        "\\hline\n"
+        "\\endhead\n"
     )
     lines = [header]
     for row in rows:
         lines.append(
             f"{latex_escape(row['method'])} & {row['n_train']} & {row['n_test']} & "
             f"{row['train_mae']:.2f} & {row['test_mae']:.2f} & "
-            f"{row['params']} & {row['func']} \\\\ \\n\\hline\\n"
+            f"{row['params']} & {row['func']} \\\\ \n\\hline\n"
         )
-    lines.append("\\end{longtable}\\n")
+    lines.append("\\end{longtable}\n")
     with open(output_path, "w", encoding="utf-8") as f:
         f.writelines(lines)
     print(f"LaTeX table saved: {output_path}")
@@ -791,6 +855,9 @@ def run_method(method, cfg):
         "test_mae": test_mae,
         "params": format_coefficients(coeffs),
         "func": format_polynomial_expression(cfg["poly"]),
+        "coefficients": coeffs.tolist(),
+        "variables": get_polynomial_variables(cfg["poly"]),
+        "polynomial_expression_raw": format_expression_with_raw_coeffs(cfg["poly"], coeffs),
         "y_train": y_train,
         "y_test": y_test,
         "y_train_pred": y_train_pred,
@@ -812,6 +879,11 @@ def main():
         plot_split_block(rows, split="train")
         plot_split_block(rows, split="test")
         write_latex_table(rows, os.path.join(PLOTS_DIR, LATEX_TABLE_NAME))
+        write_inference_dataframe(
+            rows,
+            os.path.join(PLOTS_DIR, INFERENCE_DF_NAME),
+            csv_path=os.path.join(PLOTS_DIR, INFERENCE_CSV_NAME),
+        )
 
 
 if __name__ == "__main__":
