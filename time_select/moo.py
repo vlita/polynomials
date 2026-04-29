@@ -182,6 +182,13 @@ time_polynomials = {
                 (1.0, 2.0),
                 ],
             "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400, 
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
             "run_tight": True,
             "tight_method": "L-BFGS-B",
             "tight_delta": [
@@ -199,17 +206,17 @@ time_polynomials = {
         "poly": lambda p, n_occ, n_virt, nbf_aux: (
             p[0]
             + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)
-            + p[2] * ((n_occ + n_virt) ** 2 * nbf_aux)
+            + p[2] * ((n_occ + n_virt) ** p[3] * nbf_aux)
         ),
         "coeffs": {
-            "n_params": 3,
+            "n_params": 4,
             "guess": [
                 30.20909883e01,
                 # 3.81966012e-05,
                 # 3.81966012e-08,
                 1.67912758e-10,
                 1.97912758e-8,
-                # 1.50049297,
+                1.50049297,
                 ],
             "bounds": [
                 (0.0, None),
@@ -217,7 +224,7 @@ time_polynomials = {
                 # (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
-                # (1.0, 2.0),
+                (1.0, 2.0),
                 ],
             "coarse_method": "Powell",
             "run_tight": True,
@@ -228,7 +235,7 @@ time_polynomials = {
                 # 1.0e-6,
                 1.0e-11,
                 1.0e-19,
-                # 0.5, # fine, doesnt really change that much anyways
+                0.5, # fine, doesnt really change that much anyways
             ],
         },
     },
@@ -357,7 +364,13 @@ time_polynomials = {
                 # (1.0e-15, 1.0e-6),
                 ],
             "coarse_method": "Powell",
-            "coarse_options": {"maxiter": 400, "maxfev": 6000, "xtol": 1e-10, "ftol": 1e-10, "disp": True},
+            "coarse_options": {
+                "maxiter": 400,
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
             "run_tight": True,
             "tight_method": "L-BFGS-B",
             "tight_delta":[
