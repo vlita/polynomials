@@ -87,16 +87,17 @@ time_polynomials = {
     "PBE-D3": {
         "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
             p[0]
-            + p[1] * (np_total * (n_occ + n_virt) ** p[3]) # RV: Form V
-            # + p[2] * ((n_occ + n_virt) ** p[3] * nbf_aux)
-            + p[2] * ((n_occ + n_virt) ** p[4] * nbf_aux ** 2) # DFH: AO-Met. Contraction
+            + p[1] * (np_total * (n_occ + n_virt) ** p[4]) # RV: Form V
+            + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux)
+            + p[3] * ((n_occ + n_virt) ** p[5] * nbf_aux ** 2) # DFH: AO-Met. Contraction
         ),
         "coeffs": {
-            "n_params": 5,
+            "n_params": 6,
             "guess": [
-                1.00005130e+00,
-                3.81966012e-08,
-                3.81966012e-08,
+                10.00005130e+00,
+                5.67912758e-09,
+                3.81966012e-09,
+                3.81966012e-09,
                 1.00005516,
                 1.00049297,
                 ],
@@ -104,14 +105,23 @@ time_polynomials = {
                 (1.0, 100),
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
                 (0.5, 2.0),
                 (1.0, 2.0),
             ],
             "coarse_method": "Powell",
-            "run_tight": True,
+            "coarse_options": {
+                "maxiter": 400,
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
+            "run_tight": False,
             "tight_method": "L-BFGS-B",
             "tight_delta": [
                 10,
+                1.0e-7,
                 1.0e-7,
                 1.0e-7,
                 0.5,
@@ -122,33 +132,49 @@ time_polynomials = {
     "wB97X-D": {
         "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
             p[0]
-            + p[1] * (np_total * (n_occ + n_virt) ** p[3])
+            + p[1] * (np_total * (n_occ + n_virt) ** p[5])
             # + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)
-            # + p[1] * ((n_occ + n_virt) ** p[3] * nbf_aux**2)
-            # + p[4] * ((n_occ + n_virt) ** 2 * nbf_aux)
-            + p[2] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
+            + p[2] * ((n_occ + n_virt) ** p[6] * nbf_aux**2)
+            + p[3] * ((n_occ + n_virt) ** p[6] * nbf_aux)
+            + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
         ),
         "coeffs": {
-            "n_params": 4,
+            "n_params": 7,
             "guess": [
-                3.20909883e01,
-                3.81966012e-08,
-                3.81966012e-08,
+                150.20909883e01,
+                3.81966012e-10,
+                3.81966012e-09,
+                3.81966012e-09,
+                3.81966012e-09,
+                1.50049297,
                 1.50049297,
                 ],
             "bounds": [
                 (0.0, None),
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
                 (0.75, 2.0),
+                (1.0, 2.0),
                 ],
             "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400,
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
             "run_tight": True,
             "tight_method": "L-BFGS-B",
             "tight_delta": [
                 10,
                 1.0e-7,
                 1.0e-7,
+                1.0e-7,
+                1.0e-7,
+                0.5,
                 0.5,
             ],
         },
@@ -156,22 +182,23 @@ time_polynomials = {
     "wB97X-V": {
         "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
             p[0]
-            # + p[1] * (np_total * (n_occ + n_virt) ** 1.0)
-            # + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)
-            + p[1] * ((n_occ + n_virt) ** p[4] * nbf_aux**2)
-            # + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux)
-            + p[2] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
-            + p[3] * (np_total ** 2)
+            + p[1] * (np_total * (n_occ + n_virt) ** p[6])
+            + p[2] * ((n_occ + n_virt) ** p[7] * nbf_aux**2)
+            + p[3] * ((n_occ + n_virt) ** p[7] * nbf_aux)
+            + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
+            + p[5] * (np_total ** 2)
         ),
         "coeffs": {
-            "n_params": 5,
+            "n_params": 8,
             "guess": [
                 125.20909883e01,
+                3.81966012e-08,
                 3.81966012e-05,
-                # 3.81966012e-08,
+                3.81966012e-08,
                 7.67912758e-10,
                 8.97912758e-11,
                 1.50049297,
+                1.50000343,
                 ],
             "bounds": [
                 (0.0, None),
@@ -179,6 +206,9 @@ time_polynomials = {
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (0.75, 2.0),
                 (1.0, 2.0),
                 ],
             "coarse_method": "Powell",
@@ -193,12 +223,13 @@ time_polynomials = {
             "tight_method": "L-BFGS-B",
             "tight_delta": [
                 10,
-                # 1.0e-7,
+                1.0e-7,
+                1.0e-7,
                 1.0e-6,
                 1.0e-11,
                 1.0e-12,
+                0.5,
                 0.5, # fine, doesnt really change that much anyways
-
             ],
         },
     },
@@ -243,37 +274,51 @@ time_polynomials = {
         "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
             # p[0]
             # + p[1] * (np_total * (n_occ + n_virt) ** 1.0)
-            # + p[2] * ((n_occ + n_virt) ** 2 * nbf_aux**2)
-            # + p[3] * ((n_occ + n_virt) ** 2 * nbf_aux)
+
             # + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2) ** 0.75
             p[0]
-            + p[1] * (np_total * (n_occ + n_virt) ** p[3])
-            # + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)
-            # + p[1] * ((n_occ + n_virt) ** p[3] * nbf_aux**2)
-            # + p[4] * ((n_occ + n_virt) ** 2 * nbf_aux)
-            + p[2] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
+            + p[1] * (np_total * (n_occ + n_virt) ** p[5])
+            + p[2] * ((n_occ + n_virt) ** p[6] * nbf_aux**2)
+            + p[3] * ((n_occ + n_virt) ** p[6] * nbf_aux)
+            + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
         ),
         "coeffs": {
-            "n_params": 4,
+            "n_params": 7,
             "guess": [
                 3.20909883e01,
                 3.81966012e-09,
+                3.81966012e-09,
+                3.81966012e-09,
                 1.21966012e-10,
                 1.50049297,
+                1.500093,
                 ],
             "bounds": [
                 (0.0, None),
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
                 (0.75, 2.0),
+                (1.0, 2.0),
                 ],
             "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400, 
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
             "run_tight": True,
             "tight_method": "L-BFGS-B",
             "tight_delta": [
                 10,
                 1.0e-10,
+                1.0e-7,
+                1.0e-7,
                 1.0e-11,
+                0.5,
                 0.5,
             ],
         },
@@ -314,30 +359,48 @@ time_polynomials = {
     "M05-2X": {
         "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
             p[0]
-            + p[1] * (np_total * (n_occ + n_virt) ** p[3])
-            + p[2] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
+            + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux**2)
+            + p[3] * ((n_occ + n_virt) ** p[5] * nbf_aux)
+            + p[3] * (np_total * (n_occ + n_virt) ** p[6])
+            + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
         ),
         "coeffs": {
-            "n_params": 4,
+            "n_params": 7,
             "guess": [
                 30,
+                3.81966012e-09,
+                3.81966012e-09,
                 1.01980502e-08,
                 0.950187e-10,
+                1.50049297,
                 1.50049297,
                 ],
             "bounds": [
                 (0.0, None),
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0, 2.0),
                 (0.75, 2.0),
                 ],
             "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400, 
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
             "run_tight": True,
             "tight_method": "L-BFGS-B",
             "tight_delta": [
                 10,
+                1.0e-7,
+                1.0e-7,
                 1.0e-9,
                 1.0e-11,
+                0.5,
                 0.5,
             ],
         },
@@ -345,23 +408,23 @@ time_polynomials = {
     "FNO-CCSD": {
         "poly": lambda p, n_occ, n_virt, nbf_aux: (
             p[0] 
-            # + p[3] * ((n_occ + n_virt) ** 5) 
+            + p[3] * ((n_occ + n_virt) ** 5) 
             + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)
             + p[2] * (n_occ**2 * n_virt**4)
         ),
         "coeffs": {
-            "n_params": 3,
+            "n_params": 4,
             "guess": [
                 1,
                 5.67912758e-7, 
                 0.763534e-11,
-                # 1.23534e-12,                
+                1.23534e-12,                
                 ],
             "bounds": [
                 (0.0, 50),
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
-                # (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
                 ],
             "coarse_method": "Powell",
             "coarse_options": {
@@ -377,28 +440,30 @@ time_polynomials = {
                 10,
                 1.0e-7,
                 1.0e-12,
-                # 1.0e-13,
+                1.0e-12,
                 ],
         },
     },
     "FNO-CCSD(T)": {
         "poly": lambda p, n_occ, n_virt, nbf_aux: (
             p[0]
-            # + p[1] * ((n_occ + n_virt) ** 5)
+            + p[4] * ((n_occ + n_virt) ** 5)
             + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)
             + p[2] * (n_occ**2 * n_virt**4)
             + p[3] * (n_occ**3 * n_virt**4)
         ),
         "coeffs": {
-            "n_params": 4,
+            "n_params": 5,
             "guess": [
                 3.20909883e01, 
                 5.67912758e-7, 
                 1.67912758e-12, 
                 2.67912758e-12,
+                1.23534e-12,
                 ],
             "bounds": [
                 (0, None),
+                (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
@@ -411,7 +476,8 @@ time_polynomials = {
                 1.0e-7,
                 1.0e-13,
                 1.0e-13,
-            ],
+                1.0e-12,
+                ],
         },
     },
 }
