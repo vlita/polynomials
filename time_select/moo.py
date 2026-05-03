@@ -21,6 +21,11 @@ LATEX_FORMAT = "png"
 LATEX_TABLE_NAME = "time_fit_template.tex"
 INFERENCE_DF_NAME = "time_fit_inference_df.pkl"
 INFERENCE_CSV_NAME = "time_fit_inference_df.csv"
+SHOW_AXIS_LABELS = False
+AXIS_X_LABEL = "log10 time (s)"
+AXIS_Y_LABEL = "predicted log10 time (s)"
+AXIS_LABEL_SIZE_OFFSET = 4
+COMBINED_LABEL_SIZE_OFFSET = 0
 
 os.makedirs(PLOTS_DIR, exist_ok=True)
 os.makedirs(BLOCK_PLOTS_DIR, exist_ok=True)
@@ -236,36 +241,46 @@ time_polynomials = {
     "MP2": {
         "poly": lambda p, n_occ, n_virt, nbf_aux: (
             p[0]
-            + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)
-            + p[2] * ((n_occ + n_virt) ** p[3] * nbf_aux)
+            + p[1] * ((n_occ + n_virt) ** p[5] * nbf_aux ** 2)           # AO-Met. Contraction
+            + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux)                # J / contraction / (A|mn)
+            + p[3] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)           # K
+            + p[4] * (n_occ ** 2  * n_virt ** 2 * nbf_aux)               # MP2 energy
+
         ),
         "coeffs": {
-            "n_params": 4,
+            "n_params": 6,
             "guess": [
-                30.20909883e01,
-                # 3.81966012e-05,
-                # 3.81966012e-08,
+                3.20909883e01,
+                3.81966012e-10,
                 1.67912758e-10,
-                1.97912758e-8,
+                1.97912758e-10,
+                1.67912758e-12,
                 1.50049297,
                 ],
             "bounds": [
                 (0.0, None),
-                # (1.0e-15, 1.0e-6),
-                # (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
                 (1.0, 2.0),
                 ],
             "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400, 
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
             "run_tight": True,
             "tight_method": "L-BFGS-B",
             "tight_delta": [
-                10,
-                # 1.0e-7,
-                # 1.0e-6,
+                100,
                 1.0e-11,
-                1.0e-19,
+                1.0e-11,
+                1.0e-11,
+                1.0e-12,
                 0.5, # fine, doesnt really change that much anyways
             ],
         },
@@ -326,33 +341,56 @@ time_polynomials = {
     "B2PLYP-D3": {
         "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
             p[0]
-            + p[1] * (np_total * (n_occ + n_virt) ** p[3])
-            # + p[3] * ((n_occ + n_virt) ** 2 * nbf_aux**2)   # contraction
-            # + p[4] * ((n_occ + n_virt) ** 2 * nbf_aux)      # DFMP2 term 
-            + p[2] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
+            + p[1] * (np_total * (n_occ + n_virt) ** p[6])
+            + p[2] * ((n_occ + n_virt) ** p[7] * nbf_aux ** 2)           # AO-Met. Contraction
+            + p[3] * ((n_occ + n_virt) ** p[8] * nbf_aux)                # J / contraction / (A|mn)
+            + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)           # K
+            + p[5] * (n_occ ** 2  * n_virt ** 2 * nbf_aux)               # MP2 energy
         ),
         "coeffs": {
-            "n_params": 4,
+            "n_params": 9,
             "guess": [
-                4.63274504e-02,
+                0,
                 1.01980502e-08,
                 1.7050187e-10,
+                1.7050187e-10,
+                1.7050187e-10,
+                1.67912758e-12,
+                1.00049297,
+                1.50049297,
                 1.50049297,
                 ],
             "bounds": [
-                (0.0, None),
+                (0.0, 1.0),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
                 (1.0e-15, 1.0e-6),
                 (0.75, 2.0),
+                (1.0, 2.0),
+                (1.0, 2.0),
                 ],
             "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400, 
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
             "run_tight": True,
             "tight_method": "L-BFGS-B",
             "tight_delta": [
                 10,
                 1.0e-9,
                 1.0e-11,
+                1.0e-11,
+                1.0e-11,
+                1.0e-12,
                 0.5,
+                0.5,
+                0.5,                
             ],
         },
     },
@@ -639,6 +677,7 @@ def plot_combined(method, y_train, y_test, y_train_pred, y_test_pred, train_mae,
     gs = fig.add_gridspec(1, 2, width_ratios=[1, 1], wspace=0.25)
     ax_train = fig.add_subplot(gs[0, 0])
     ax_test = fig.add_subplot(gs[0, 1])
+    label_size = plt.rcParams["axes.labelsize"] + COMBINED_LABEL_SIZE_OFFSET
 
     for ax, y, y_pred, title, mae in [
         (ax_train, y_train, y_train_pred, "- Train", train_mae),
@@ -664,6 +703,9 @@ def plot_combined(method, y_train, y_test, y_train_pred, y_test_pred, train_mae,
         )
         ax.set_title(f"{method} {title}", fontsize=plt.rcParams["axes.labelsize"])
 
+    if SHOW_AXIS_LABELS:
+        fig.supxlabel(AXIS_X_LABEL, fontsize=label_size)
+        fig.supylabel(AXIS_Y_LABEL, fontsize=label_size)
     plt.tight_layout()
     save_plot(fig, os.path.join(PLOTS_DIR, f"{method}_combined"))
     plt.close(fig)
@@ -678,6 +720,7 @@ def plot_split_block(rows, split):
     nrows = int(np.ceil(n / ncols))
     fig, axes = plt.subplots(nrows, ncols, figsize=(17, 5.5 * nrows))
     axes = np.atleast_1d(axes).ravel()
+    label_size = plt.rcParams["axes.labelsize"] + AXIS_LABEL_SIZE_OFFSET
 
     for i, row in enumerate(rows):
         ax = axes[i]
@@ -712,9 +755,15 @@ def plot_split_block(rows, split):
         )
         ax.set_title(f"{row['method']}", fontsize=plt.rcParams["axes.labelsize"])
 
+        ax.set_xlabel("")
+        ax.set_ylabel("")
+
     for j in range(n, len(axes)):
         axes[j].set_visible(False)
 
+    if SHOW_AXIS_LABELS:
+        fig.supxlabel(AXIS_X_LABEL, fontsize=label_size)
+        fig.supylabel(AXIS_Y_LABEL, fontsize=label_size)
     plt.tight_layout()
     save_plot(fig, os.path.join(BLOCK_PLOTS_DIR, f"all_methods_{split}"))
     plt.close(fig)
