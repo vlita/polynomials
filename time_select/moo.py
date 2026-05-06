@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.ticker import FixedLocator, FormatStrFormatter
-from matplotlib.lines import Line2D
 from scipy.optimize import minimize
 from sklearn.metrics import r2_score, root_mean_squared_error
 from sklearn.model_selection import train_test_split
@@ -27,11 +26,6 @@ AXIS_X_LABEL = "log10 time (s)"
 AXIS_Y_LABEL = "predicted log10 time (s)"
 AXIS_LABEL_SIZE_OFFSET = 4
 COMBINED_LABEL_SIZE_OFFSET = 0
-COLOR_BY_MULTIPLICITY = True
-MULTIPLICITY_FACTORS = {
-    "m_K": 2.0,
-    "m_J": 2.0,
-    }
 
 os.makedirs(PLOTS_DIR, exist_ok=True)
 os.makedirs(BLOCK_PLOTS_DIR, exist_ok=True)
@@ -57,33 +51,116 @@ def apply_plot_style():
 
 time_polynomials = {
     "HF": {
-        "poly": lambda p, n_occ, n_virt, nbf_aux, m_K, m_J: (
+        "poly": lambda p, n_occ, n_virt, nbf_aux: (
             p[0]
             # + p[1] * (nbf_aux * (n_occ + n_virt) ** 2)
             # + p[2] * ((n_occ + n_virt) ** 2 * nbf_aux**2) ** 0.65
             # + p[3] * ((n_occ + n_virt) ** 2 * nbf_aux) ** 0.80
             # + p[1] * (nbf_aux * (n_occ + n_virt) ** p[5])                # DFH: AO Construction
-            + p[1] * ((n_occ + n_virt) ** p[5] * nbf_aux ** 2)           # AO-Met. Contraction
-            + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux)           # DFH: AO Construction
-            + p[3] * m_J * ((n_occ + n_virt) ** p[5] * nbf_aux)          # J
-            + p[4] * m_K * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)     # K
+            + p[1] * ((n_occ + n_virt) ** p[4] * nbf_aux ** 2)           # AO-Met. Contraction
+            + p[2] * ((n_occ + n_virt) ** p[4] * nbf_aux)                # J
+            + p[3] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)           # K
         ),
         "coeffs": {
-            "n_params": 6,
+            "n_params": 5,
             "guess": [
                 3.20909883e01, 
                 3.81966012e-08,
                 3.81966012e-08,
-                3.81966012e-08,
-                7.67912758e-9, # sweeping from e-0.8 to e-0.11 and tuning tight_delta within +-1 OM
+                5.67912758e-11, # sweeping from e-0.8 to e-0.11 and tuning tight_delta within +-1 OM
                 1.50
                 ],
             "bounds": [
                 (1.0, 100.0), 
                 (1.0e-14, 1.0e-6), 
-                (1.0e-14, 1.0e-6), 
                 (1.0e-14, 1.0e-6),
                 (1.0e-14, 1.0e-6),  
+                (1.0, 2.0),
+                ],
+            "coarse_method": "Powell",
+            "run_tight": True,
+            "tight_method": "L-BFGS-B",
+            "tight_delta": [
+                10,
+                1.0e-7,
+                1.0e-7,
+                1.0e-12,
+                0.5,
+            ],
+        },
+    },
+    "PBE-D3": {
+        "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+            p[0]
+            + p[1] * (np_total * (n_occ + n_virt) ** p[4]) # RV: Form V
+            + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux)
+            + p[3] * ((n_occ + n_virt) ** p[5] * nbf_aux ** 2) # DFH: AO-Met. Contraction
+        ),
+        "coeffs": {
+            "n_params": 6,
+            "guess": [
+                10.00005130e+00,
+                5.67912758e-09,
+                3.81966012e-09,
+                3.81966012e-09,
+                1.00005516,
+                1.00049297,
+                ],
+            "bounds": [
+                (1.0, 100),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (0.5, 2.0),
+                (1.0, 2.0),
+            ],
+            "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400,
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
+            "run_tight": False,
+            "tight_method": "L-BFGS-B",
+            "tight_delta": [
+                10,
+                1.0e-7,
+                1.0e-7,
+                1.0e-7,
+                0.5,
+                0.5,
+            ],  
+        },
+    },
+    "wB97X-D": {
+        "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+            p[0]
+            + p[1] * (np_total * (n_occ + n_virt) ** p[5])
+            # + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)
+            + p[2] * ((n_occ + n_virt) ** p[6] * nbf_aux**2)
+            + p[3] * ((n_occ + n_virt) ** p[6] * nbf_aux)
+            + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
+        ),
+        "coeffs": {
+            "n_params": 7,
+            "guess": [
+                150.20909883e01,
+                3.81966012e-10,
+                3.81966012e-09,
+                3.81966012e-09,
+                3.81966012e-09,
+                1.50049297,
+                1.50049297,
+                ],
+            "bounds": [
+                (0.0, None),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (0.75, 2.0),
                 (1.0, 2.0),
                 ],
             "coarse_method": "Powell",
@@ -101,455 +178,352 @@ time_polynomials = {
                 1.0e-7,
                 1.0e-7,
                 1.0e-7,
-                1.0e-8,
+                1.0e-7,
+                0.5,
                 0.5,
             ],
         },
     },
-    # "PBE-D3": {
-    #     "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-    #         p[0]
-    #         + p[1] * (np_total * (n_occ + n_virt) ** p[4]) # RV: Form V
-    #         + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux)
-    #         + p[3] * ((n_occ + n_virt) ** p[5] * nbf_aux ** 2) # DFH: AO-Met. Contraction
-    #     ),
-    #     "coeffs": {
-    #         "n_params": 6,
-    #         "guess": [
-    #             10.00005130e+00,
-    #             5.67912758e-09,
-    #             3.81966012e-09,
-    #             3.81966012e-09,
-    #             1.00005516,
-    #             1.00049297,
-    #             ],
-    #         "bounds": [
-    #             (1.0, 100),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (0.5, 2.0),
-    #             (1.0, 2.0),
-    #         ],
-    #         "coarse_method": "Powell",
-    #         "coarse_options": {
-    #             "maxiter": 400,
-    #             "maxfev": 6000, 
-    #             "xtol": 1e-10, 
-    #             "ftol": 1e-10, 
-    #             "disp": True
-    #             },
-    #         "run_tight": False,
-    #         "tight_method": "L-BFGS-B",
-    #         "tight_delta": [
-    #             10,
-    #             1.0e-7,
-    #             1.0e-7,
-    #             1.0e-7,
-    #             0.5,
-    #             0.5,
-    #         ],  
-    #     },
-    # },
-    # "wB97X-D": {
-    #     "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-    #         p[0]
-    #         + p[1] * (np_total * (n_occ + n_virt) ** p[5])
-    #         # + p[2] * (nbf_aux * (n_occ + n_virt) ** 2)
-    #         + p[2] * ((n_occ + n_virt) ** p[6] * nbf_aux**2)
-    #         + p[3] * ((n_occ + n_virt) ** p[6] * nbf_aux)
-    #         + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
-    #     ),
-    #     "coeffs": {
-    #         "n_params": 7,
-    #         "guess": [
-    #             150.20909883e01,
-    #             3.81966012e-10,
-    #             3.81966012e-09,
-    #             3.81966012e-09,
-    #             3.81966012e-09,
-    #             1.50049297,
-    #             1.50049297,
-    #             ],
-    #         "bounds": [
-    #             (0.0, None),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (0.75, 2.0),
-    #             (1.0, 2.0),
-    #             ],
-    #         "coarse_method": "Powell",
-    #         "coarse_options": {
-    #             "maxiter": 400,
-    #             "maxfev": 6000, 
-    #             "xtol": 1e-10, 
-    #             "ftol": 1e-10, 
-    #             "disp": True
-    #             },
-    #         "run_tight": True,
-    #         "tight_method": "L-BFGS-B",
-    #         "tight_delta": [
-    #             10,
-    #             1.0e-7,
-    #             1.0e-7,
-    #             1.0e-7,
-    #             1.0e-7,
-    #             0.5,
-    #             0.5,
-    #         ],
-    #     },
-    # },
-    # "wB97X-V": {
-    #     "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-    #         p[0]
-    #         + p[1] * (np_total * (n_occ + n_virt) ** p[6])
-    #         + p[2] * ((n_occ + n_virt) ** p[7] * nbf_aux**2)
-    #         + p[3] * ((n_occ + n_virt) ** p[7] * nbf_aux)
-    #         + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
-    #         + p[5] * (np_total ** 2)
-    #     ),
-    #     "coeffs": {
-    #         "n_params": 8,
-    #         "guess": [
-    #             125.20909883e01,
-    #             3.81966012e-08,
-    #             3.81966012e-05,
-    #             3.81966012e-08,
-    #             7.67912758e-10,
-    #             8.97912758e-11,
-    #             1.50049297,
-    #             1.50000343,
-    #             ],
-    #         "bounds": [
-    #             (0.0, None),
-    #             # (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (0.75, 2.0),
-    #             (1.0, 2.0),
-    #             ],
-    #         "coarse_method": "Powell",
-    #         "coarse_options": {
-    #             "maxiter": 400, 
-    #             "maxfev": 6000, 
-    #             "xtol": 1e-10, 
-    #             "ftol": 1e-10, 
-    #             "disp": True
-    #             },
-    #         "run_tight": True,
-    #         "tight_method": "L-BFGS-B",
-    #         "tight_delta": [
-    #             10,
-    #             1.0e-7,
-    #             1.0e-7,
-    #             1.0e-6,
-    #             1.0e-11,
-    #             1.0e-12,
-    #             0.5,
-    #             0.5, # fine, doesnt really change that much anyways
-    #         ],
-    #     },
-    # },
-    # "MP2": {
-    #     "poly": lambda p, n_occ, n_virt, nbf_aux: (
-    #         p[0]
-    #         + p[1] * ((n_occ + n_virt) ** p[5] * nbf_aux ** 2)           # AO-Met. Contraction
-    #         + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux)                # J / contraction / (A|mn)
-    #         + p[3] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)           # K
-    #         + p[4] * (n_occ ** 2  * n_virt ** 2 * nbf_aux)               # MP2 energy
+    "wB97X-V": {
+        "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+            p[0]
+            + p[1] * (np_total * (n_occ + n_virt) ** p[6])
+            + p[2] * ((n_occ + n_virt) ** p[7] * nbf_aux**2)
+            + p[3] * ((n_occ + n_virt) ** p[7] * nbf_aux)
+            + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
+            + p[5] * (np_total ** 2)
+        ),
+        "coeffs": {
+            "n_params": 8,
+            "guess": [
+                125.20909883e01,
+                3.81966012e-08,
+                3.81966012e-05,
+                3.81966012e-08,
+                7.67912758e-10,
+                8.97912758e-11,
+                1.50049297,
+                1.50000343,
+                ],
+            "bounds": [
+                (0.0, None),
+                # (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (0.75, 2.0),
+                (1.0, 2.0),
+                ],
+            "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400, 
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
+            "run_tight": True,
+            "tight_method": "L-BFGS-B",
+            "tight_delta": [
+                10,
+                1.0e-7,
+                1.0e-7,
+                1.0e-6,
+                1.0e-11,
+                1.0e-12,
+                0.5,
+                0.5, # fine, doesnt really change that much anyways
+            ],
+        },
+    },
+    "MP2": {
+        "poly": lambda p, n_occ, n_virt, nbf_aux: (
+            p[0]
+            + p[1] * ((n_occ + n_virt) ** p[5] * nbf_aux ** 2)           # AO-Met. Contraction
+            + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux)                # J / contraction / (A|mn)
+            + p[3] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)           # K
+            + p[4] * (n_occ ** 2  * n_virt ** 2 * nbf_aux)               # MP2 energy
 
-    #     ),
-    #     "coeffs": {
-    #         "n_params": 6,
-    #         "guess": [
-    #             3.20909883e01,
-    #             3.81966012e-10,
-    #             1.67912758e-10,
-    #             1.97912758e-10,
-    #             1.67912758e-12,
-    #             1.50049297,
-    #             ],
-    #         "bounds": [
-    #             (0.0, None),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0, 2.0),
-    #             ],
-    #         "coarse_method": "Powell",
-    #         "coarse_options": {
-    #             "maxiter": 400, 
-    #             "maxfev": 6000, 
-    #             "xtol": 1e-10, 
-    #             "ftol": 1e-10, 
-    #             "disp": True
-    #             },
-    #         "run_tight": True,
-    #         "tight_method": "L-BFGS-B",
-    #         "tight_delta": [
-    #             100,
-    #             1.0e-11,
-    #             1.0e-11,
-    #             1.0e-11,
-    #             1.0e-12,
-    #             0.5, # fine, doesnt really change that much anyways
-    #         ],
-    #     },
-    # },
-    # "B3LYP-D3": {
-    #     "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-    #         # p[0]
-    #         # + p[1] * (np_total * (n_occ + n_virt) ** 1.0)
+        ),
+        "coeffs": {
+            "n_params": 6,
+            "guess": [
+                3.20909883e01,
+                3.81966012e-10,
+                1.67912758e-10,
+                1.97912758e-10,
+                1.67912758e-12,
+                1.50049297,
+                ],
+            "bounds": [
+                (0.0, None),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0, 2.0),
+                ],
+            "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400, 
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
+            "run_tight": True,
+            "tight_method": "L-BFGS-B",
+            "tight_delta": [
+                100,
+                1.0e-11,
+                1.0e-11,
+                1.0e-11,
+                1.0e-12,
+                0.5, # fine, doesnt really change that much anyways
+            ],
+        },
+    },
+    "B3LYP-D3": {
+        "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+            # p[0]
+            # + p[1] * (np_total * (n_occ + n_virt) ** 1.0)
 
-    #         # + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2) ** 0.75
-    #         p[0]
-    #         + p[1] * (np_total * (n_occ + n_virt) ** p[5])
-    #         + p[2] * ((n_occ + n_virt) ** p[6] * nbf_aux**2)
-    #         + p[3] * ((n_occ + n_virt) ** p[6] * nbf_aux)
-    #         + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
-    #     ),
-    #     "coeffs": {
-    #         "n_params": 7,
-    #         "guess": [
-    #             3.20909883e01,
-    #             3.81966012e-09,
-    #             3.81966012e-09,
-    #             3.81966012e-09,
-    #             1.21966012e-10,
-    #             1.50049297,
-    #             1.500093,
-    #             ],
-    #         "bounds": [
-    #             (0.0, None),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (0.75, 2.0),
-    #             (1.0, 2.0),
-    #             ],
-    #         "coarse_method": "Powell",
-    #         "coarse_options": {
-    #             "maxiter": 400, 
-    #             "maxfev": 6000, 
-    #             "xtol": 1e-10, 
-    #             "ftol": 1e-10, 
-    #             "disp": True
-    #             },
-    #         "run_tight": True,
-    #         "tight_method": "L-BFGS-B",
-    #         "tight_delta": [
-    #             10,
-    #             1.0e-10,
-    #             1.0e-7,
-    #             1.0e-7,
-    #             1.0e-11,
-    #             0.5,
-    #             0.5,
-    #         ],
-    #     },
-    # },
-    # "B2PLYP-D3": {
-    #     "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-    #         p[0]
-    #         + p[1] * (np_total * (n_occ + n_virt) ** p[6])
-    #         + p[2] * ((n_occ + n_virt) ** p[7] * nbf_aux ** 2)           # AO-Met. Construction
-    #         + p[3] * ((n_occ + n_virt) ** p[8] * nbf_aux)                # J / contraction / (A|mn) J is pretty much free here... 
-    #         + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)           # K
-    #         + p[5] * (n_occ ** 2  * n_virt ** 2 * nbf_aux)               # MP2 energy
-    #     ),
-    #     "coeffs": {
-    #         "n_params": 9,
-    #         "guess": [
-    #             0,
-    #             1.01980502e-08,
-    #             1.7050187e-10,
-    #             1.7050187e-10,
-    #             1.7050187e-10,
-    #             1.67912758e-12,
-    #             1.00049297,
-    #             1.50049297,
-    #             1.50049297,
-    #             ],
-    #         "bounds": [
-    #             (0.0, 1.0),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (0.75, 2.0),
-    #             (1.0, 2.0),
-    #             (1.0, 2.0),
-    #             ],
-    #         "coarse_method": "Powell",
-    #         "coarse_options": {
-    #             "maxiter": 400, 
-    #             "maxfev": 6000, 
-    #             "xtol": 1e-10, 
-    #             "ftol": 1e-10, 
-    #             "disp": True
-    #             },
-    #         "run_tight": True,
-    #         "tight_method": "L-BFGS-B",
-    #         "tight_delta": [
-    #             10,
-    #             1.0e-9,
-    #             1.0e-11,
-    #             1.0e-11,
-    #             1.0e-11,
-    #             1.0e-12,
-    #             0.5,
-    #             0.5,
-    #             0.5,                
-    #         ],
-    #     },
-    # },
-    # "M05-2X": {
-    #     "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
-    #         p[0]
-    #         + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux**2)
-    #         + p[3] * ((n_occ + n_virt) ** p[5] * nbf_aux)
-    #         + p[3] * (np_total * (n_occ + n_virt) ** p[6])
-    #         + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
-    #     ),
-    #     "coeffs": {
-    #         "n_params": 7,
-    #         "guess": [
-    #             30,
-    #             3.81966012e-09,
-    #             3.81966012e-09,
-    #             1.01980502e-08,
-    #             0.950187e-10,
-    #             1.50049297,
-    #             1.50049297,
-    #             ],
-    #         "bounds": [
-    #             (0.0, None),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0, 2.0),
-    #             (0.75, 2.0),
-    #             ],
-    #         "coarse_method": "Powell",
-    #         "coarse_options": {
-    #             "maxiter": 400, 
-    #             "maxfev": 6000, 
-    #             "xtol": 1e-10, 
-    #             "ftol": 1e-10, 
-    #             "disp": True
-    #             },
-    #         "run_tight": True,
-    #         "tight_method": "L-BFGS-B",
-    #         "tight_delta": [
-    #             10,
-    #             1.0e-7,
-    #             1.0e-7,
-    #             1.0e-9,
-    #             1.0e-11,
-    #             0.5,
-    #             0.5,
-    #         ],
-    #     },
-    # },
-    # "FNO-CCSD": { # final
-    #     "poly": lambda p, n_occ, n_virt, nbf_aux: (
-    #         p[0] 
-    #         + p[3] * ((n_occ + n_virt) ** 5) 
-    #         + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)
-    #         + p[2] * (n_occ**2 * n_virt**4)
-    #     ),
-    #     "coeffs": {
-    #         "n_params": 4,
-    #         "guess": [
-    #             1,
-    #             5.67912758e-7, 
-    #             0.763534e-11,
-    #             1.23534e-12,                
-    #             ],
-    #         "bounds": [
-    #             (0.0, 50),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             ],
-    #         "coarse_method": "Powell",
-    #         "coarse_options": {
-    #             "maxiter": 400,
-    #             "maxfev": 6000, 
-    #             "xtol": 1e-10, 
-    #             "ftol": 1e-10, 
-    #             "disp": True
-    #             },
-    #         "run_tight": True,
-    #         "tight_method": "L-BFGS-B",
-    #         "tight_delta":[
-    #             10,
-    #             1.0e-7,
-    #             1.0e-12,
-    #             1.0e-12,
-    #             ],
-    #     },
-    # },
-    # "FNO-CCSD(T)": { # final
-    #     "poly": lambda p, n_occ, n_virt, nbf_aux: (
-    #         p[0]
-    #         + p[4] * ((n_occ + n_virt) ** 5)
-    #         + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)
-    #         + p[2] * (n_occ**2 * n_virt**4)
-    #         + p[3] * (n_occ**3 * n_virt**4)
-    #     ),
-    #     "coeffs": {
-    #         "n_params": 5,
-    #         "guess": [
-    #             3.20909883e01, 
-    #             5.67912758e-7, 
-    #             1.67912758e-12, 
-    #             2.67912758e-12,
-    #             1.23534e-12,
-    #             ],
-    #         "bounds": [
-    #             (0, None),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             (1.0e-15, 1.0e-6),
-    #             ],
-    #         "coarse_method": "Powell",
-    #         "run_tight": True,
-    #         "tight_method": "L-BFGS-B",
-    #         "tight_delta": [
-    #             10,
-    #             1.0e-7,
-    #             1.0e-13,
-    #             1.0e-13,
-    #             1.0e-12,
-    #             ],
-    #     },
-    # },
+            # + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2) ** 0.75
+            p[0]
+            + p[1] * (np_total * (n_occ + n_virt) ** p[5])
+            + p[2] * ((n_occ + n_virt) ** p[6] * nbf_aux**2)
+            + p[3] * ((n_occ + n_virt) ** p[6] * nbf_aux)
+            + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
+        ),
+        "coeffs": {
+            "n_params": 7,
+            "guess": [
+                3.20909883e01,
+                3.81966012e-09,
+                3.81966012e-09,
+                3.81966012e-09,
+                1.21966012e-10,
+                1.50049297,
+                1.500093,
+                ],
+            "bounds": [
+                (0.0, None),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (0.75, 2.0),
+                (1.0, 2.0),
+                ],
+            "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400, 
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
+            "run_tight": True,
+            "tight_method": "L-BFGS-B",
+            "tight_delta": [
+                10,
+                1.0e-10,
+                1.0e-7,
+                1.0e-7,
+                1.0e-11,
+                0.5,
+                0.5,
+            ],
+        },
+    },
+    "B2PLYP-D3": {
+        "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+            p[0]
+            + p[1] * (np_total * (n_occ + n_virt) ** p[6])
+            + p[2] * ((n_occ + n_virt) ** p[7] * nbf_aux ** 2)           # AO-Met. Contraction
+            + p[3] * ((n_occ + n_virt) ** p[8] * nbf_aux)                # J / contraction / (A|mn)
+            + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)           # K
+            + p[5] * (n_occ ** 2  * n_virt ** 2 * nbf_aux)               # MP2 energy
+        ),
+        "coeffs": {
+            "n_params": 9,
+            "guess": [
+                0,
+                1.01980502e-08,
+                1.7050187e-10,
+                1.7050187e-10,
+                1.7050187e-10,
+                1.67912758e-12,
+                1.00049297,
+                1.50049297,
+                1.50049297,
+                ],
+            "bounds": [
+                (0.0, 1.0),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (0.75, 2.0),
+                (1.0, 2.0),
+                (1.0, 2.0),
+                ],
+            "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400, 
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
+            "run_tight": True,
+            "tight_method": "L-BFGS-B",
+            "tight_delta": [
+                10,
+                1.0e-9,
+                1.0e-11,
+                1.0e-11,
+                1.0e-11,
+                1.0e-12,
+                0.5,
+                0.5,
+                0.5,                
+            ],
+        },
+    },
+    "M05-2X": {
+        "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
+            p[0]
+            + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux**2)
+            + p[3] * ((n_occ + n_virt) ** p[5] * nbf_aux)
+            + p[3] * (np_total * (n_occ + n_virt) ** p[6])
+            + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
+        ),
+        "coeffs": {
+            "n_params": 7,
+            "guess": [
+                30,
+                3.81966012e-09,
+                3.81966012e-09,
+                1.01980502e-08,
+                0.950187e-10,
+                1.50049297,
+                1.50049297,
+                ],
+            "bounds": [
+                (0.0, None),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0, 2.0),
+                (0.75, 2.0),
+                ],
+            "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400, 
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
+            "run_tight": True,
+            "tight_method": "L-BFGS-B",
+            "tight_delta": [
+                10,
+                1.0e-7,
+                1.0e-7,
+                1.0e-9,
+                1.0e-11,
+                0.5,
+                0.5,
+            ],
+        },
+    },
+    "FNO-CCSD": {
+        "poly": lambda p, n_occ, n_virt, nbf_aux: (
+            p[0] 
+            + p[3] * ((n_occ + n_virt) ** 5) 
+            + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)
+            + p[2] * (n_occ**2 * n_virt**4)
+        ),
+        "coeffs": {
+            "n_params": 4,
+            "guess": [
+                1,
+                5.67912758e-7, 
+                0.763534e-11,
+                1.23534e-12,                
+                ],
+            "bounds": [
+                (0.0, 50),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                ],
+            "coarse_method": "Powell",
+            "coarse_options": {
+                "maxiter": 400,
+                "maxfev": 6000, 
+                "xtol": 1e-10, 
+                "ftol": 1e-10, 
+                "disp": True
+                },
+            "run_tight": True,
+            "tight_method": "L-BFGS-B",
+            "tight_delta":[
+                10,
+                1.0e-7,
+                1.0e-12,
+                1.0e-12,
+                ],
+        },
+    },
+    "FNO-CCSD(T)": {
+        "poly": lambda p, n_occ, n_virt, nbf_aux: (
+            p[0]
+            + p[4] * ((n_occ + n_virt) ** 5)
+            + p[1] * (n_occ * (n_occ + n_virt) ** 2 * nbf_aux)
+            + p[2] * (n_occ**2 * n_virt**4)
+            + p[3] * (n_occ**3 * n_virt**4)
+        ),
+        "coeffs": {
+            "n_params": 5,
+            "guess": [
+                3.20909883e01, 
+                5.67912758e-7, 
+                1.67912758e-12, 
+                2.67912758e-12,
+                1.23534e-12,
+                ],
+            "bounds": [
+                (0, None),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                (1.0e-15, 1.0e-6),
+                ],
+            "coarse_method": "Powell",
+            "run_tight": True,
+            "tight_method": "L-BFGS-B",
+            "tight_delta": [
+                10,
+                1.0e-7,
+                1.0e-13,
+                1.0e-13,
+                1.0e-12,
+                ],
+        },
+    },
 }
 
 
 def get_polynomial_variables(poly_func):
     sig = inspect.signature(poly_func)
     return [name for name in sig.parameters if name != "p"]
-
-
-def strip_multiplicity_factors(expression, factor_names):
-    if not expression or not factor_names:
-        return expression
-    out = expression
-    for name in factor_names:
-        out = re.sub(rf"\b{re.escape(name)}\b", "1", out)
-    return out
 
 
 def extract_variables_from_df(df, var_names):
@@ -633,7 +607,7 @@ def minimize_with_best(objective, x0, method, bounds, stage="opt", options=None)
         options=method_options,
         callback=callback,
     )
-    print(f"    {stage}:{method} raw scipy result:\n{result}tasks")
+    print(f"    {stage}:{method} raw scipy result:\n{result}")
     print(f"    {stage}:{method} wrapped objective evaluations: {eval_count['n']}")
     result_fun = float(result.fun)
     if np.isfinite(result_fun) and (best["loss"] + 1e-12 < result_fun):
@@ -698,73 +672,21 @@ def save_plot(fig, path_base):
     print(f"Plot saved: {path}")
 
 
-def build_multiplicity_colors(multiplicity):
-    if multiplicity is None:
-        return None, None
-    mult = np.asarray(multiplicity)
-    if mult.size == 0:
-        return None, None
-    if np.all(np.isfinite(mult)) and np.allclose(mult, np.round(mult)):
-        mult = np.round(mult).astype(int)
-    unique = np.unique(mult)
-    if unique.size <= 1:
-        return None, None
-    cmap = plt.get_cmap("tab20")
-    colors = [cmap(i % cmap.N) for i, _ in enumerate(unique)]
-    color_map = {val: colors[i] for i, val in enumerate(unique)}
-    point_colors = [color_map[val] for val in mult]
-    handles = [
-        Line2D(
-            [0],
-            [0],
-            marker="o",
-            linestyle="",
-            markersize=6,
-            color=color_map[val],
-            label=str(val),
-        )
-        for val in unique
-    ]
-    return point_colors, handles
-
-
-def plot_combined(
-    method,
-    y_train,
-    y_test,
-    y_train_pred,
-    y_test_pred,
-    train_mae,
-    test_mae,
-    mult_train=None,
-    mult_test=None,
-    color_by_multiplicity=False,
-):
+def plot_combined(method, y_train, y_test, y_train_pred, y_test_pred, train_mae, test_mae):
     fig = plt.figure(figsize=(17, 6))
     gs = fig.add_gridspec(1, 2, width_ratios=[1, 1], wspace=0.25)
     ax_train = fig.add_subplot(gs[0, 0])
     ax_test = fig.add_subplot(gs[0, 1])
     label_size = plt.rcParams["axes.labelsize"] + COMBINED_LABEL_SIZE_OFFSET
 
-    for ax, y, y_pred, title, mae, mult in [
-        (ax_train, y_train, y_train_pred, "- Train", train_mae, mult_train),
-        (ax_test, y_test, y_test_pred, "- Test", test_mae, mult_test),
+    for ax, y, y_pred, title, mae in [
+        (ax_train, y_train, y_train_pred, "- Train", train_mae),
+        (ax_test, y_test, y_test_pred, "- Test", test_mae),
     ]:
         min_val = min(y.min(), y_pred.min())
         max_val = max(y.max(), y_pred.max())
         ax.plot([min_val, max_val], [min_val, max_val], color="black", lw=2, zorder=1)
-        if color_by_multiplicity:
-            colors, handles = build_multiplicity_colors(mult)
-        else:
-            colors, handles = None, None
-        ax.scatter(
-            y,
-            y_pred,
-            s=50,
-            alpha=1.0,
-            color=colors if colors is not None else "steelblue",
-            edgecolors="none",
-        )
+        ax.scatter(y, y_pred, s=50, alpha=1.0, color="steelblue", edgecolors="none")
         ticks = np.arange(np.floor(min_val), np.ceil(max_val) + 1, 1)
         ax.xaxis.set_major_locator(FixedLocator(ticks))
         ax.yaxis.set_major_locator(FixedLocator(ticks))
@@ -780,15 +702,6 @@ def plot_combined(
             fontsize=plt.rcParams["xtick.labelsize"],
         )
         ax.set_title(f"{method} {title}", fontsize=plt.rcParams["axes.labelsize"])
-        if handles and not color_by_multiplicity:
-            ax.legend(
-                handles=handles,
-                title="Multiplicity",
-                loc="lower right",
-                fontsize=10,
-                title_fontsize=10,
-                frameon=False,
-            )
 
     if SHOW_AXIS_LABELS:
         fig.supxlabel(AXIS_X_LABEL, fontsize=label_size)
@@ -798,7 +711,7 @@ def plot_combined(
     plt.close(fig)
 
 
-def plot_split_block(rows, split, color_by_multiplicity=False):
+def plot_split_block(rows, split):
     if not rows:
         return
 
@@ -815,28 +728,15 @@ def plot_split_block(rows, split, color_by_multiplicity=False):
             y = row["y_train"]
             y_pred = row["y_train_pred"]
             mae = row["train_mae"]
-            mult = row.get("mult_train")
         else:
             y = row["y_test"]
             y_pred = row["y_test_pred"]
             mae = row["test_mae"]
-            mult = row.get("mult_test")
 
         min_val = min(y.min(), y_pred.min())
         max_val = max(y.max(), y_pred.max())
         ax.plot([min_val, max_val], [min_val, max_val], color="black", lw=2, zorder=1)
-        if color_by_multiplicity:
-            colors, handles = build_multiplicity_colors(mult)
-        else:
-            colors, handles = None, None
-        ax.scatter(
-            y,
-            y_pred,
-            s=50,
-            alpha=1.0,
-            color=colors if colors is not None else "steelblue",
-            edgecolors="none",
-        )
+        ax.scatter(y, y_pred, s=50, alpha=1.0, color="steelblue", edgecolors="none")
 
         ticks = np.arange(np.floor(min_val), np.ceil(max_val) + 1, 1)
         ax.xaxis.set_major_locator(FixedLocator(ticks))
@@ -854,15 +754,6 @@ def plot_split_block(rows, split, color_by_multiplicity=False):
             fontsize=plt.rcParams["xtick.labelsize"],
         )
         ax.set_title(f"{row['method']}", fontsize=plt.rcParams["axes.labelsize"])
-        if handles and not color_by_multiplicity:
-            ax.legend(
-                handles=handles,
-                title="Multiplicity",
-                loc="lower right",
-                fontsize=9,
-                title_fontsize=9,
-                frameon=False,
-            )
 
         ax.set_xlabel("")
         ax.set_ylabel("")
@@ -887,7 +778,7 @@ def format_coefficients(coeffs):
     return "\\begin{tabular}{l}" + " \\\\ ".join(lines) + "\\end{tabular}"
 
 
-def format_polynomial_expression(poly_func, factor_names=None):
+def format_polynomial_expression(poly_func):
     def strip_outer_parens(text):
         text = text.strip()
         while text.startswith("(") and text.endswith(")"):
@@ -929,7 +820,6 @@ def format_polynomial_expression(poly_func, factor_names=None):
     }
     for key, val in replacements.items():
         expr = expr.replace(key, val)
-    expr = strip_multiplicity_factors(expr, factor_names)
     expr = expr.replace("**", "^")
     expr = re.sub(r"\^\s*(c_\{\d+\}|N_\{[^}]+\}|\d+(?:\.\d+)?)", r"^{\1}", expr)
     expr = expr.replace("*", " \\cdot ")
@@ -947,7 +837,7 @@ def format_polynomial_expression(poly_func, factor_names=None):
     return "$\\begin{array}{l}" + " \\\\ ".join(lines) + "\\end{array}$"
 
 
-def format_expression_with_raw_coeffs(poly_func, coeffs, factor_names=None):
+def format_expression_with_raw_coeffs(poly_func, coeffs):
     def strip_outer_parens(text):
         text = text.strip()
         while text.startswith("(") and text.endswith(")"):
@@ -986,8 +876,7 @@ def format_expression_with_raw_coeffs(poly_func, coeffs, factor_names=None):
             raise IndexError(f"Coefficient index p[{idx}] out of range for {len(coeffs)} params.")
         return np.format_float_positional(coeffs[idx], precision=17, unique=False, trim="-")
 
-    expr = re.sub(r"p\[(\d+)\]", repl, expr)
-    return strip_multiplicity_factors(expr, factor_names)
+    return re.sub(r"p\[(\d+)\]", repl, expr)
 
 
 def write_inference_dataframe(rows, output_path, csv_path=None):
@@ -1053,15 +942,8 @@ def run_method(method, cfg):
         mask = df[mult_col].notna() & (df[mult_col] != 1)
         count = int(mask.sum())
         if count:
-            df.loc[mask, ["nocc", "nvirt"]] = df.loc[mask, ["nocc", "nvirt"]] * 1.0
+            df.loc[mask, ["nocc", "nvirt"]] = df.loc[mask, ["nocc", "nvirt"]] * 2
         print(f"Multiplicity adjustment: {count} rows doubled (col: {mult_col}).")
-        df["multiplicity"] = df[mult_col].fillna(1)
-    else:
-        df["multiplicity"] = 1
-
-    non_singlet = df["multiplicity"] != 1
-    for name, factor in MULTIPLICITY_FACTORS.items():
-        df[name] = np.where(non_singlet, float(factor), 1.0)
 
     df["nbf"] = df["nocc"] + df["nvirt"]
     df["log(time(s))"] = np.log10(df["time(s)"])
@@ -1091,22 +973,8 @@ def run_method(method, cfg):
     print(f"Train RMSE: {train_rmse:.6f}, R2: {train_r2:.6f}, MAE: {train_mae:.6f}")
     print(f"Test  RMSE: {test_rmse:.6f}, R2: {test_r2:.6f}, MAE: {test_mae:.6f}")
 
-    plot_combined(
-        method,
-        y_train,
-        y_test,
-        y_train_pred,
-        y_test_pred,
-        train_mae,
-        test_mae,
-        mult_train=df_train["multiplicity"].values,
-        mult_test=df_test["multiplicity"].values,
-        color_by_multiplicity=COLOR_BY_MULTIPLICITY,
-    )
+    plot_combined(method, y_train, y_test, y_train_pred, y_test_pred, train_mae, test_mae)
 
-    factor_names = set(MULTIPLICITY_FACTORS.keys())
-    variables_all = get_polynomial_variables(cfg["poly"])
-    variables_inference = [name for name in variables_all if name not in factor_names]
     return {
         "method": method,
         "n_train": len(df_train),
@@ -1114,20 +982,14 @@ def run_method(method, cfg):
         "train_mae": train_mae,
         "test_mae": test_mae,
         "params": format_coefficients(coeffs),
-        "func": format_polynomial_expression(cfg["poly"], factor_names=factor_names),
+        "func": format_polynomial_expression(cfg["poly"]),
         "coefficients": coeffs.tolist(),
-        "variables": variables_inference,
-        "polynomial_expression_raw": format_expression_with_raw_coeffs(
-            cfg["poly"],
-            coeffs,
-            factor_names=factor_names,
-        ),
+        "variables": get_polynomial_variables(cfg["poly"]),
+        "polynomial_expression_raw": format_expression_with_raw_coeffs(cfg["poly"], coeffs),
         "y_train": y_train,
         "y_test": y_test,
         "y_train_pred": y_train_pred,
         "y_test_pred": y_test_pred,
-        "mult_train": df_train["multiplicity"].values,
-        "mult_test": df_test["multiplicity"].values,
     }
 
 
@@ -1142,8 +1004,8 @@ def main():
         if row is not None:
             rows.append(row)
     if rows:
-        plot_split_block(rows, split="train", color_by_multiplicity=COLOR_BY_MULTIPLICITY)
-        plot_split_block(rows, split="test", color_by_multiplicity=COLOR_BY_MULTIPLICITY)
+        plot_split_block(rows, split="train")
+        plot_split_block(rows, split="test")
         write_latex_table(rows, os.path.join(PLOTS_DIR, LATEX_TABLE_NAME))
         write_inference_dataframe(
             rows,
