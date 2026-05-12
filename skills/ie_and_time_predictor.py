@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import qcelemental as qcel
 import apnet_pt
-import polynomial_fit_data
+from polynomial_fit_data import polynomial_expressions
 from pprint import pprint as pp
 
 def parse_geoms(
@@ -42,13 +42,11 @@ def parse_geoms(
 
     chgmult_pattern = re.compile(r'^\s*[-+]?\d+\s+[-+]?\d+\s*$')
     for file in os.listdir(path):
-        path = os.path.join(path, file)
+        filepath = os.path.join(path, file)
 
-        if os.path.isfile(path):
-            id.append(file.strip().split(".")[0])
-            
+        if os.path.isfile(filepath):
             try:
-                with open(path, "r", errors="ignore") as f:
+                with open(filepath, "r", errors="ignore") as f:
                     raw_geom_str = f.read()
 
                     chgmult = 0 # will not catch 
@@ -75,19 +73,20 @@ def parse_geoms(
                     except Exception as e:
                         print(f"Error converting raw string to qcelemental.models.Molecule: \n {e}")
                         continue
-
+                    
+                    id.append(file.strip().split(".")[0])
                     n_atoms.append(len(mol_qcel.atomic_numbers))
 
 
                     fragments = mol_qcel.fragments
-                    assert len(fragments == 2), "input geometry must be a dimer"
+                    assert len(fragments) == 2, "input geometry must be a dimer"
 
                     qcel_dimer.append(mol_qcel)
                     qcel_monA.append(mol_qcel.get_fragment(fragments[0]))
                     qcel_monB.append(mol_qcel.get_fragment(fragments[1]))
 
             except Exception as e:
-                print(f"Error processing file at {path}: \n {e}")
+                print(f"Error processing file at {filepath}: \n {e}")
 
     return pd.DataFrame({
         "id": id,
@@ -109,7 +108,7 @@ def compute_psi4_time_estimation_variables(
     n_occupied: number of occupied orbitals in the primary basis
     n_vitual:   number of virtual orbitals in the primary basis
     np_total:   number of points in the DFT integration grid
-    nbf_aux:    number of functions in the auxillary basis (RIFIT for MP2, JKFIT for all others)
+    nbf_aux:    number of functions in the auxilary basis (JKFIT for methods.. this is an approximation)
     """
     try:
         mol = psi4.core.Molecule.from_schema(mol_qcel.dict())
@@ -129,13 +128,13 @@ def compute_psi4_time_estimation_variables(
 
     except Exception as e:
         print(f"Error when building grid or wavefunction: \n {e}")
+        return np.array([np.nan] * 4)
 
     n_occupied = math.ceil((wfn.nalpha() + wfn.nbeta()) / 2)
     n_virtual = bs.nbf() - n_occupied
     np_total = grid.npoints()
 
     try: 
-        print("Warning: using a JK auxiliary basis for MP2 and B2PLYP-D3 timing predictions")
         aux_basis = psi4.core.BasisSet.build(
             wfn.molecule(),
             "DF_BASIS_SCF",
@@ -146,6 +145,7 @@ def compute_psi4_time_estimation_variables(
 
     except Exception as e:
         print(f"Error when building the auxillary basis: \n {e}")
+        return np.array([np.nan] * 4)
 
     nbf_aux = aux_basis.nbf()
     psi4.core.clean()
@@ -175,7 +175,9 @@ def build_inference_table(
     monA_tvars = []
     monB_tvars = []
 
-    for idx in range(df_copy.index.max() + 1):
+    print("Warning: using a JK auxiliary basis for MP2 and B2PLYP-D3 timing predictions")
+
+    for idx in sorted(df_copy.index.unique()):
         row = df_copy.loc[idx].iloc[0]
 
         for basis in bases:
@@ -189,14 +191,14 @@ def build_inference_table(
         "monB_tvars": monB_tvars,
     })
 
-    df_copy = pd.concat([df_copy, timing_vars], ignore_index=True)
+    df_copy = pd.concat([df_copy, timing_vars], axis = 1)
 
     # explode again and insert lotr strings 
-    df_copy = df_copy.loc[df.index.repeat(len(methods))].copy()
+    df_copy = df_copy.loc[df_copy.index.repeat(len(methods))].copy()
     df_copy["Level of Theory"] = lotr_strings
 
     # reorder indicies
-    a = len(df_copy)
+    a = len(df)
     b = len(lotr_strings)
 
     order = (
@@ -237,7 +239,7 @@ def predict_ie_errors_batch(
     """
     errors = []
 
-    for idx in range(df.index.max() + 1):
+    for idx in sorted(df.index.unique()):
         mols = df.loc[idx]["qcel_dimer"].to_list()
         lotr = df.loc[idx].iloc[0]["Level of Theory"]
         
@@ -248,11 +250,13 @@ def predict_ie_errors_batch(
                 m1=lotr,
                 m2="CCSD(T)/CBS/CP",
             )
+            errors.extend(IE_pred.to_list())
+            print(f"completed interaction energy error estimation for all geometries at {lotr}")
+
         except Exception as e:
             print(f"dAPNet Error: \n {e}")
-
-        errors.extend(IE_pred.to_list())
-        print(f"completed interaction energy error estimation for all geometries at {lotr}")
+            errors.extend([np.nan] * len(mols))
+            print(f"skipping {lotr} due to faliures")
 
     df["ERROR ESTIMATES (kcal/mol)"] = errors
     return
@@ -275,12 +279,12 @@ def predict_timing(
     if uhf_ref and (method == "FNO-CCSD" or method == "FNO-CCSD(T)"):
         raise ValueError(f"Polynomial expressions for unrestricted {method} not implemented yet")
 
-    polynomial_lambda_expr = polynomial_fit_data[method]["poly"]
+    polynomial_lambda_expr = polynomial_expressions[method]["poly"]
 
     if uhf_ref:
-        coeffs = polynomial_fit_data[method]["unr_coeffs"]
+        coeffs = polynomial_expressions[method]["unr_coeffs"]
     else: 
-        coeffs = polynomial_fit_data[method]["res_coeffs"]
+        coeffs = polynomial_expressions[method]["res_coeffs"]
 
     return np.log10(polynomial_lambda_expr(coeffs, t_vars))
 
@@ -297,7 +301,7 @@ def predict_timings_batch(
     supermolecular_times = []
 
     for _, row in df.iterrows():
-        method = df["Level of Theory"].split("/")[0]
+        method = row["Level of Theory"].split("/")[0]
         
         d_tvars = row["dimer_tvars"]
         a_tvars = row["monA_tvars"]
@@ -306,26 +310,27 @@ def predict_timings_batch(
         try:
             a = predict_timing(
                 method, 
-                0 if row["qcel_dimer"].molecular_multiplicity == 1 else 1, 
+                (0 if row["qcel_dimer"].molecular_multiplicity == 1 else 1), 
                 d_tvars
             )
 
             b = predict_timing(
                 method, 
-                0 if row["qcel_monA"].molecular_multiplicity == 1 else 1, 
+                (0 if row["qcel_monA"].molecular_multiplicity == 1 else 1), 
                 a_tvars
             )
             
             c = predict_timing(
                 method, 
-                0 if row["qcel_monB"].molecular_multiplicity == 1 else 1, 
+                (0 if row["qcel_monB"].molecular_multiplicity == 1 else 1), 
                 b_tvars
             )
 
+            supermolecular_times.append(a + b + c)
+
         except Exception as e:
             print(f"timing polynomial error: \n {e}")
-
-        supermolecular_times.append(a + b + c)
+            supermolecular_times.append(np.nan)
 
     df["ESTIMATED CPU TIMES (log10(s))"] = supermolecular_times
     return
@@ -335,7 +340,6 @@ n_threads = 4 # testing purposes
 
 method_list = ["HF", "wB97X-V", "MP2"]
 basis_list = ["cc-pvdz", "aug-cc-pvdz"]
-
 
 def main():
     # set threads and supress output
