@@ -5,8 +5,8 @@ import math
 import numpy as np
 import pandas as pd
 import qcelemental as qcel
-import apnet_pt
-from polynomial_fit_data import polynomial_expressions
+import apnet_pt                                                          # need to add qcml_forge. prefix if outside of src/
+from qcml_mcp.timings.polynomial_fit_data import polynomial_expressions    # need to add qcml_forge. prefix if outside of src/
 from pprint import pprint as pp
 
 def parse_geoms(
@@ -25,6 +25,19 @@ def parse_geoms(
     <charge_mon2> <multiplicity_mon2>
     units <unit>
     '''
+
+    Example:
+
+    0 1
+    O 0.000000 0.000000  0.000000
+    H 0.758602 0.000000  0.504284
+    H 0.260455 0.000000 -0.872893
+    --
+    0 1
+    O 3.000000 0.500000  0.000000
+    H 3.758602 0.500000  0.504284
+    H 3.260455 0.500000 -0.872893
+    units angstrom
 
     Returns a pd.DataFrame with the following columns:
 
@@ -82,8 +95,9 @@ def parse_geoms(
                     assert len(fragments) == 2, "input geometry must be a dimer"
 
                     qcel_dimer.append(mol_qcel)
-                    qcel_monA.append(mol_qcel.get_fragment(fragments[0]))
-                    qcel_monB.append(mol_qcel.get_fragment(fragments[1]))
+                    qcel_monA.append(mol_qcel.get_fragment(0))
+                    qcel_monB.append(mol_qcel.get_fragment(1))
+                    print(f"succesfully built molecule and fragments for geometry found at {filepath}")
 
             except Exception as e:
                 print(f"Error processing file at {filepath}: \n {e}")
@@ -125,6 +139,7 @@ def compute_psi4_time_estimation_variables(
         wfn = psi4.core.Wavefunction.build(mol, psi4.core.get_global_option("BASIS"))
         bs = wfn.basisset()
         grid = psi4.core.DFTGrid.build(mol, bs)
+        print("compute vars: built wfn & grid")
 
     except Exception as e:
         print(f"Error when building grid or wavefunction: \n {e}")
@@ -142,6 +157,7 @@ def compute_psi4_time_estimation_variables(
             "JKFIT",
             psi4.core.get_global_option("BASIS"),
         )
+        print("compute vars: built aux basis")
 
     except Exception as e:
         print(f"Error when building the auxillary basis: \n {e}")
@@ -159,14 +175,22 @@ def compute_psi4_time_estimation_variables(
 def build_inference_table(
         df: pd.DataFrame,
         methods: list[str],
-        bases: list[str]
+        bases: list[str],
+        cp: bool
     ) -> pd.DataFrame:
     """
     Modifies a pandas.Dataframe for batch prediction of (supermolecular) 
     interaction energy errors & timings. Timing variables are calculated
     per molecular system/basis-set pair and copied over to all LOTs considered. 
     """
-    lotr_strings = [m + "/" + b + "/unCP" for b in bases for m in methods] # pretty sure everything I ran was not CP-corrected
+    cp_str = "/unCP"
+
+    if cp:
+        print("Warning: using un-counterpoise corrected models for counterpoise corrected timing predictions")
+        cp_str = "/CP"
+
+    lotr_strings = [m + "/" + b + cp_str for b in bases for m in methods] # pretty sure everything I ran was not CP-corrected
+    lotr_strings = lotr_strings * len(df)
 
     df_copy = df.copy()
     df_copy = df_copy.loc[df.index.repeat(len(bases))].copy()
@@ -178,35 +202,25 @@ def build_inference_table(
     print("Warning: using a JK auxiliary basis for MP2 and B2PLYP-D3 timing predictions")
 
     for idx in sorted(df_copy.index.unique()):
-        row = df_copy.loc[idx].iloc[0]
+        rows = df_copy.loc[[idx]]   
+        row = rows.iloc[0]          
 
         for basis in bases:
             dimer_tvars.append(compute_psi4_time_estimation_variables(row["qcel_dimer"], basis))
             monA_tvars.append(compute_psi4_time_estimation_variables(row["qcel_monA"], basis))
             monB_tvars.append(compute_psi4_time_estimation_variables(row["qcel_monB"], basis))
  
-    timing_vars = pd.DataFrame({
-        "dimer_tvars": dimer_tvars,
-        "monA_tvars": monA_tvars,
-        "monB_tvars": monB_tvars,
-    })
-
-    df_copy = pd.concat([df_copy, timing_vars], axis = 1)
+    df_copy[["dimer_tvars", "monA_tvars", "monB_tvars"]] = list(zip(dimer_tvars, monA_tvars, monB_tvars))
 
     # explode again and insert lotr strings 
-    df_copy = df_copy.loc[df_copy.index.repeat(len(methods))].copy()
+    df_copy = df_copy.iloc[np.repeat(np.arange(len(df_copy)), len(methods))].copy()
     df_copy["Level of Theory"] = lotr_strings
 
     # reorder indicies
     a = len(df)
-    b = len(lotr_strings)
+    b = len(df_copy) // a
 
-    order = (
-        np.arange(a * b)
-        .reshape(a, b)
-        .T
-        .ravel()
-    )
+    order = np.arange(len(df_copy)).reshape(a, b).T.ravel()
 
     df_copy = df_copy.iloc[order].copy()
     df_copy.index = np.repeat(np.arange(b), a)
@@ -240,8 +254,9 @@ def predict_ie_errors_batch(
     errors = []
 
     for idx in sorted(df.index.unique()):
-        mols = df.loc[idx]["qcel_dimer"].to_list()
-        lotr = df.loc[idx].iloc[0]["Level of Theory"]
+        rows = df.loc[[idx]]
+        mols = rows["qcel_dimer"].to_list()
+        lotr = rows.iloc[0]["Level of Theory"]
         
         try:
             IE_pred = apnet_pt.pretrained_models.dapnet2_model_predict(
@@ -250,7 +265,7 @@ def predict_ie_errors_batch(
                 m1=lotr,
                 m2="CCSD(T)/CBS/CP",
             )
-            errors.extend(IE_pred.to_list())
+            errors.extend(IE_pred.tolist())
             print(f"completed interaction energy error estimation for all geometries at {lotr}")
 
         except Exception as e:
@@ -261,10 +276,16 @@ def predict_ie_errors_batch(
     df["ERROR ESTIMATES (kcal/mol)"] = errors
     return
 
+def load_coeffs(
+    path: str
+) -> pd.DataFrame:
+    return pd.read_pickle(path).set_index("method")
+
 def predict_timing(
-        method: str,
-        uhf_ref: bool,
-        t_vars: np.ndarray,
+    method: str,
+    uhf_ref: bool,
+    t_vars: np.ndarray,
+    coeffs_from_pkl: bool
 ) -> float:
     """
     Predict timing for a given method and input variables using dictionary of saved 
@@ -281,10 +302,18 @@ def predict_timing(
 
     polynomial_lambda_expr = polynomial_expressions[method]["poly"]
 
-    if uhf_ref:
-        coeffs = polynomial_expressions[method]["unr_coeffs"]
-    else: 
-        coeffs = polynomial_expressions[method]["res_coeffs"]
+    if uhf_ref: 
+        if coeffs_from_pkl:
+            df = pd.read_pickle("./time_fit_inference_df_unrestricted.pkl").set_index("method")
+            coeffs = df.at[method, "coefficients"]
+        else:
+            coeffs = polynomial_expressions[method]["unr_coeffs"]
+    else:
+        if coeffs_from_pkl:
+            df = pd.read_pickle("./time_fit_inference_df_restricted.pkl").set_index("method")
+            coeffs = df.at[method, "coefficients"]
+        else:
+            coeffs = polynomial_expressions[method]["res_coeffs"]
 
     return np.log10(polynomial_lambda_expr(coeffs, t_vars))
 
@@ -311,22 +340,25 @@ def predict_timings_batch(
             a = predict_timing(
                 method, 
                 (0 if row["qcel_dimer"].molecular_multiplicity == 1 else 1), 
-                d_tvars
+                d_tvars,
+                0
             )
 
             b = predict_timing(
                 method, 
                 (0 if row["qcel_monA"].molecular_multiplicity == 1 else 1), 
-                a_tvars
+                a_tvars,
+                0
             )
             
             c = predict_timing(
                 method, 
                 (0 if row["qcel_monB"].molecular_multiplicity == 1 else 1), 
-                b_tvars
+                b_tvars,
+                0
             )
 
-            supermolecular_times.append(a + b + c)
+            supermolecular_times.append(np.log10(10**a + 10**b + 10**c))
 
         except Exception as e:
             print(f"timing polynomial error: \n {e}")
@@ -335,16 +367,41 @@ def predict_timings_batch(
     df["ESTIMATED CPU TIMES (log10(s))"] = supermolecular_times
     return
 
-geom_path = "./test_xyz_data"
+geom_path = "./test_geoms"
 n_threads = 4 # testing purposes
+using_CP = 1
 
-method_list = ["HF", "wB97X-V", "MP2"]
-basis_list = ["cc-pvdz", "aug-cc-pvdz"]
+method_list = [
+    "HF", 
+    "PBE-D3", 
+    "wB97X-D", 
+    "wB97X-V", 
+    "MP2", 
+    "B3LYP-D3", 
+    "B2PLYP-D3", 
+    "M05-2X", 
+    "FNO-CCSD", 
+    "FNO-CCSD(T)"
+    ]
+
+basis_list = [
+    "cc-pVDZ", 
+    "cc-pVTZ", 
+    "cc-pVQZ", 
+    "aug-cc-pVQZ", 
+    "aug-cc-pVTZ", 
+    "aug-cc-pVDZ"
+    ]
+
 
 def main():
     # set threads and supress output
     psi4.core.be_quiet()
     psi4.set_num_threads(n_threads)
+
+    # load coeffs
+    # restricted_coeffs = load_coeffs("./time_fit_inference_df_restricted.pkl")
+    # unrestricted_coeffs = load_coeffs("./time_fit_inference_df_unrestricted.pkl")
 
     # Parse through a database of dimer geometry files, build initial dataframe
     df1 = parse_geoms(geom_path)
@@ -353,15 +410,18 @@ def main():
     df2 = build_inference_table(
         df1,
         method_list,
-        basis_list)
+        basis_list,
+        using_CP)
     
     # Run infrence on rows of the dataframe in batch mode (energies and timings)
     predict_ie_errors_batch(df2)
     predict_timings_batch(df2)
+    pd.set_option("display.max_rows", None)
+    pd.set_option("display.max_columns", None)
     pp(df2)
+    # pp(df2.iloc[80:99])
 
     return df2
 
 if __name__ == "__main__":
     main()
-

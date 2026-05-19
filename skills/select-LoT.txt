@@ -1,0 +1,21 @@
+Use opencode-skill-creator to create a skill called select-LoT. 
+select-LoT will enable an agent to call relevant models and provide a 
+novice quantum chemist with a recommendation for the most accurate level 
+of theory (LoT) for computing intermolecular interactions energies on 
+a given set of systems, within computability constraints. 
+
+Specifically, given a user-specified database of molecular geometry files, 
+the agent will use select-LoT to parse through the files and create 
+a dataframe of molecule objects in an infrence-ready format. The agent 
+will then use select-LoT to call an ensemble of time estimation and 
+interaction energy models to populate the dataframe. Unless 
+specified by the user, all 60 possible levels of theory (corresponding to 
+pairings between 10 methods and 6 basis sets) will be considered. The agent 
+will then query the user about their available computational resources, 
+filtering out methods which are predicted to run longer than specified. 
+The agent will then prepare a detailed summary of the estimator model results,
+and recommend a final level of theory that is expected to yield accurate results 
+for the largest fraction of the considered systems.
+
+See @ie_and_time_predictor.py for a script that implements the workflow. 
+All dependencies are loaded in the active environment. 

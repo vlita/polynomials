@@ -1,0 +1,18 @@
+
+Host: pop-os
+
+Timers On : Tue May 19 15:28:55 2026
+Timers Off: Tue May 19 15:29:42 2026
+
+Wall Time:       46.89 seconds
+
+                                                       Time (seconds)
+Module                                       User      System        Wall        Calls
+build grid                          :     28.667u      0.067s     17.351w     36 calls
+post-process grid                   :      5.150u      0.083s      3.155w     36 calls
+
+--------------------------------------------------------------------------------------
+build grid                          :     28.667u      0.067s     17.351w     36 calls
+post-process grid                   :      5.150u      0.083s      3.155w     36 calls
+
+**************************************************************************************

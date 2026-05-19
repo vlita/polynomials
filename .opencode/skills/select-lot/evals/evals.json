@@ -1,0 +1,38 @@
+{
+  "skill_name": "select-lot",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "select-LoT\nGeometry folder: /home/yung/rsrch/polynomials/skills/test_geoms\nWalltime limit: 2 hours\nOutput path: ./select_lot_df.pkl\nUse default methods/basis sets.",
+      "expected_output": "Parses geometries, runs error and timing prediction for all LoTs, filters by 2-hour walltime, saves dataframe, and provides a recommendation and summary.",
+      "files": [],
+      "expectations": [
+        "Saves a dataframe file to the requested output path",
+        "Summary includes walltime value and units",
+        "Summary includes a recommended level of theory"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "select-LoT\nFolder: /home/yung/rsrch/polynomials/skills/test_geoms\nWalltime: 30 minutes\nOnly consider methods: HF, MP2, B3LYP-D3\nOnly consider basis sets: cc-pVDZ, cc-pVTZ\nSave to: ./out/lot_df.pkl",
+      "expected_output": "Uses the specified method/basis subset, predicts error/timing, filters by 30-minute walltime, saves dataframe to ./out/lot_df.pkl, and recommends a feasible LoT.",
+      "files": [],
+      "expectations": [
+        "Uses only the requested methods and basis sets",
+        "Saves a dataframe file to the requested output path",
+        "Summary includes a feasible LoT or explains none are feasible"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "select-LoT\nGeom dir: /home/yung/rsrch/polynomials/skills/test_geoms\nWalltime limit: 10 hours\nPlease show the summary and save the dataframe to ./results/select_lot_df.pkl",
+      "expected_output": "Uses default LoTs, runs predictions, filters by 10-hour walltime, saves dataframe, and provides a clear summary and recommendation.",
+      "files": [],
+      "expectations": [
+        "Saves a dataframe file to the requested output path",
+        "Summary reports number of systems parsed",
+        "Summary includes a recommended level of theory"
+      ]
+    }
+  ]
+}

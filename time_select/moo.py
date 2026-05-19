@@ -397,7 +397,7 @@ time_polynomials = {
     "M05-2X": {
         "poly": lambda p, n_occ, n_virt, nbf_aux, np_total: (
             p[0]
-            + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux**2)
+            + p[2] * ((n_occ + n_virt) ** p[5] * nbf_aux**2) # should be p[1] not p[2]
             + p[3] * ((n_occ + n_virt) ** p[5] * nbf_aux)
             + p[3] * (np_total * (n_occ + n_virt) ** p[6])
             + p[4] * (n_occ * nbf_aux * (n_occ + n_virt) ** 2)
