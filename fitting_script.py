@@ -14,7 +14,7 @@ from sklearn.metrics import r2_score, root_mean_squared_error
 from sklearn.model_selection import train_test_split
 
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+ROOT = os.path.abspath(os.path.dirname(__file__))
 DATA = "filtered_method_dfs"
 PLOTS_DIR = os.path.join(os.path.dirname(__file__), "mult_factor_plots")
 BLOCK_PLOTS_DIR = os.path.join(PLOTS_DIR, "split_blocks")
